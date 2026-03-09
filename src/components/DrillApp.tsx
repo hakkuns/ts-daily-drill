@@ -1,22 +1,161 @@
+import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import questionsData from "../data/questions.json";
 import type { Progress } from "../lib/progress";
 import {
 	completeSession,
-	isTodayCompleted,
-	isTodayStarted,
 	loadProgress,
 	recordAnswer,
 	saveProgress,
 	startSession,
 	upgradeDifficultyIfEarned,
 } from "../lib/progress";
-import { getSessionQuestions, SESSION_SIZE, selectQuestions } from "../lib/questions";
+import { SESSION_SIZE, selectQuestions } from "../lib/questions";
 import type { Question } from "../lib/types";
 
-type AppState = "loading" | "completed-today" | "quiz" | "answered" | "finished";
+type AppState = "loading" | "quiz" | "answered" | "finished";
 
 const allQuestions = questionsData as Question[];
+
+// バッククォートで囲まれたコードをインラインコード要素に変換する
+const renderText = (text: string): React.ReactNode => {
+	const parts = text.split(/`([^`]+)`/);
+	return parts.map((part, i) =>
+		i % 2 === 1 ? (
+			<code
+				key={i}
+				className="font-mono bg-slate-100 text-sky-700 px-1 py-0.5 rounded text-[0.9em] border border-slate-200"
+			>
+				{part}
+			</code>
+		) : (
+			part
+		)
+	);
+};
+
+// コードが「ブロック表示」に値するかどうか判定
+const isBlockCode = (code: string): boolean =>
+	code.length >= 35 || code.includes("{") || code.includes("\n");
+
+// 1行のTypeScriptコードを適切に改行・インデントする
+const formatCode = (raw: string): string => {
+	if (raw.includes("\n")) return raw; // すでに改行済みはそのまま
+	let depth = 0;
+	let out = "";
+	for (let i = 0; i < raw.length; i++) {
+		const c = raw[i];
+		if (c === "{") {
+			depth++;
+			out = out.trimEnd();
+			out += ` {\n${"  ".repeat(depth)}`;
+			if (raw[i + 1] === " ") i++;
+		} else if (c === "}") {
+			out = out.trimEnd();
+			depth = Math.max(0, depth - 1);
+			out += `\n${"  ".repeat(depth)}}`;
+			if (raw[i + 1] === ";") {
+				out += ";";
+				i++;
+			} else if (raw[i + 1] === " ") {
+				const upcoming = raw.slice(i + 2);
+				if (upcoming.startsWith("catch") || upcoming.startsWith("else")) {
+					out += " ";
+				} else if (upcoming.length > 0) {
+					out += `\n${"  ".repeat(depth)}`;
+				}
+				i++;
+			}
+		} else if (c === ";") {
+			out += ";";
+			if (raw[i + 1] === " " && i + 2 < raw.length) {
+				out += `\n${"  ".repeat(depth)}`;
+				i++;
+			}
+		} else {
+			out += c;
+		}
+	}
+	return out.trim();
+};
+
+// 選択肢テキスト専用レンダラー：長いコードはミニエディター風に表示
+const renderOption = (text: string): React.ReactNode => {
+	const parts = text.split(/`([^`]+)`/);
+	return parts.map((part, i) => {
+		if (i % 2 === 0) return part;
+		if (!isBlockCode(part)) {
+			return (
+				<code
+					key={i}
+					className="font-mono bg-slate-100 text-sky-700 px-1 py-0.5 rounded text-[0.9em] border border-slate-200"
+				>
+					{part}
+				</code>
+			);
+		}
+		// ブロックコード: 自動フォーマット後にミニエディター風で表示
+		const lines = formatCode(part).split("\n");
+		return (
+			<span
+				key={i}
+				className="block mt-2 rounded-lg overflow-hidden border border-slate-600 text-left"
+			>
+				<span className="flex items-center gap-2 bg-slate-800 px-3 py-1">
+					<span className="flex gap-1">
+						<span className="w-2.5 h-2.5 rounded-full bg-red-500 opacity-70" />
+						<span className="w-2.5 h-2.5 rounded-full bg-yellow-400 opacity-70" />
+						<span className="w-2.5 h-2.5 rounded-full bg-green-500 opacity-70" />
+					</span>
+					<span className="text-slate-500 text-xs font-mono">TypeScript</span>
+				</span>
+				<span className="block bg-[#1e1e1e] px-0 py-2 overflow-x-auto">
+					{lines.map((line, li) => (
+						<span key={li} className="flex leading-6">
+							<span className="text-slate-600 select-none text-xs font-mono text-right w-8 shrink-0 px-2">
+								{li + 1}
+							</span>
+							<span className="font-mono text-sm text-slate-200 whitespace-pre pr-3">{line}</span>
+						</span>
+					))}
+				</span>
+			</span>
+		);
+	});
+};
+
+// コードエディター風のコードブロック
+const CodeBlock = ({ code }: { code: string }) => {
+	const lines = code.split("\n");
+	return (
+		<div className="rounded-xl overflow-hidden border border-slate-700 shadow-lg">
+			{/* タイトルバー */}
+			<div className="flex items-center gap-2 px-4 py-2 bg-slate-800 border-b border-slate-700">
+				<div className="flex gap-1.5">
+					<div className="w-3 h-3 rounded-full bg-red-500" />
+					<div className="w-3 h-3 rounded-full bg-yellow-400" />
+					<div className="w-3 h-3 rounded-full bg-green-500" />
+				</div>
+				<span className="text-slate-400 text-xs font-mono ml-2">TypeScript</span>
+			</div>
+			{/* コード本体 */}
+			<div className="bg-[#1e1e1e] px-0 py-3 overflow-x-auto">
+				<table className="w-full border-collapse">
+					<tbody>
+						{lines.map((line, i) => (
+							<tr key={i} className="leading-6">
+								<td className="text-slate-600 select-none text-right pr-4 pl-4 text-xs font-mono w-8 align-top">
+									{i + 1}
+								</td>
+								<td className="text-slate-200 text-sm font-mono whitespace-pre pr-4">{line}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	);
+};
 
 const DifficultyStars = ({ level }: { level: 1 | 2 | 3 }) => {
 	return (
@@ -46,37 +185,12 @@ export const DrillApp = () => {
 	const currentQuestion = sessionQuestions[currentIndex];
 	const isLastQuestion = currentIndex === SESSION_SIZE - 1;
 
-	// Compute score for finished/completed screens
 	const computeScore = useCallback((p: Progress, questions: Question[]): number => {
 		if (!p.currentSession) return 0;
 		return questions.filter((q) => p.currentSession?.answers[q.id]?.correct === true).length;
 	}, []);
 
-	useEffect(() => {
-		const p = loadProgress();
-
-		if (isTodayCompleted(p)) {
-			setProgress(p);
-			if (p.currentSession) {
-				const qs = getSessionQuestions(allQuestions, p.currentSession.questionIds);
-				setSessionQuestions(qs);
-			}
-			setAppState("completed-today");
-			return;
-		}
-
-		if (isTodayStarted(p)) {
-			// Resume session
-			const qs = getSessionQuestions(allQuestions, p.currentSession?.questionIds ?? []);
-			const answeredCount = Object.keys(p.currentSession?.answers ?? {}).length;
-			setProgress(p);
-			setSessionQuestions(qs);
-			setCurrentIndex(answeredCount);
-			setAppState("quiz");
-			return;
-		}
-
-		// Start new session
+	const startNewSession = useCallback((p: Progress) => {
 		const selected = selectQuestions(allQuestions, p);
 		const ids = selected.map((q) => q.id);
 		const newProgress = startSession(p, ids);
@@ -84,8 +198,14 @@ export const DrillApp = () => {
 		setProgress(newProgress);
 		setSessionQuestions(selected);
 		setCurrentIndex(0);
+		setSelectedAnswer(null);
+		setIsCorrect(false);
 		setAppState("quiz");
 	}, []);
+
+	useEffect(() => {
+		startNewSession(loadProgress());
+	}, [startNewSession]);
 
 	const handleAnswer = useCallback(
 		(optionIndex: number) => {
@@ -129,24 +249,6 @@ export const DrillApp = () => {
 		);
 	}
 
-	if (appState === "completed-today") {
-		const score = computeScore(progress, sessionQuestions);
-		return (
-			<div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 px-4 py-8 text-center">
-				<div className="text-5xl">✅</div>
-				<h1 className="text-2xl font-bold text-slate-800">今日の5問は完了しています</h1>
-				<div className="bg-white rounded-2xl shadow p-6 w-full max-w-sm">
-					<p className="text-slate-500 text-sm mb-2">本日のスコア</p>
-					<p className="text-4xl font-bold text-blue-600">
-						{score}
-						<span className="text-xl text-slate-500 font-normal"> / {SESSION_SIZE}問正解</span>
-					</p>
-				</div>
-				<p className="text-slate-400 text-sm">また明日チャレンジしましょう！</p>
-			</div>
-		);
-	}
-
 	if (appState === "finished") {
 		const score = computeScore(progress, sessionQuestions);
 		const javaTrapCount = sessionQuestions.filter((q) => q.java_trap).length;
@@ -156,7 +258,7 @@ export const DrillApp = () => {
 				<div className="text-6xl">🎉</div>
 				<h1 className="text-2xl font-bold text-slate-800">お疲れ様でした！</h1>
 				<div className="bg-white rounded-2xl shadow p-6 w-full">
-					<p className="text-slate-500 text-sm mb-2">本日のスコア</p>
+					<p className="text-slate-500 text-sm mb-2">スコア</p>
 					<p className="text-5xl font-bold text-blue-600">
 						{score}
 						<span className="text-xl text-slate-500 font-normal"> / {SESSION_SIZE}</span>
@@ -181,6 +283,13 @@ export const DrillApp = () => {
 						<DifficultyStars level={progress.difficultyLevel as 1 | 2 | 3} />
 					</div>
 				)}
+				<button
+					type="button"
+					onClick={() => startNewSession(progress)}
+					className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold py-4 rounded-xl text-base transition-colors duration-200 min-h-[52px]"
+				>
+					もう1セットやる
+				</button>
 			</div>
 		);
 	}
@@ -217,18 +326,12 @@ export const DrillApp = () => {
 			{/* Question */}
 			<div className="bg-white rounded-2xl shadow-sm p-5">
 				<p className="text-slate-800 text-base font-medium leading-relaxed">
-					{currentQuestion.question}
+					{renderText(currentQuestion.question)}
 				</p>
 			</div>
 
 			{/* Code block */}
-			{currentQuestion.code !== "" && (
-				<div className="bg-slate-900 rounded-xl p-4 overflow-x-auto">
-					<pre className="text-green-300 text-sm font-mono leading-relaxed whitespace-pre">
-						{currentQuestion.code}
-					</pre>
-				</div>
-			)}
+			{currentQuestion.code !== "" && <CodeBlock code={currentQuestion.code} />}
 
 			{/* Options */}
 			<div className="flex flex-col gap-3">
@@ -258,7 +361,7 @@ export const DrillApp = () => {
 							onClick={() => handleAnswer(index)}
 							disabled={appState === "answered"}
 						>
-							{option}
+							{renderOption(option)}
 						</button>
 					);
 				})}
@@ -274,7 +377,9 @@ export const DrillApp = () => {
 					<p className="text-sm font-semibold mb-1 text-slate-700">
 						{isCorrect ? "✅ 正解！" : "❌ 不正解"}
 					</p>
-					<p className="text-sm text-slate-600 leading-relaxed">{currentQuestion.explanation}</p>
+					<p className="text-sm text-slate-600 leading-relaxed">
+						{renderText(currentQuestion.explanation)}
+					</p>
 					{currentQuestion.java_trap && (
 						<span className="inline-block mt-2 text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">
 							⚠ Java罠に注意
