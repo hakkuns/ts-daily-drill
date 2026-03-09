@@ -1,4 +1,10 @@
 {
-  "recommendations": ["astro-build.astro-vscode"],
-  "unwantedRecommendations": []
+	"recommendations": [
+		"astro-build.astro-vscode",
+		"biomejs.biome",
+		"bradlc.vscode-tailwindcss",
+		"vitest.explorer",
+		"eamodio.gitlens",
+		"ms-vscode.vscode-typescript-next"
+	]
 }

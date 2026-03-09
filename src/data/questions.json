@@ -1,0 +1,192 @@
+[
+	{
+		"id": "type_001",
+		"category": "型・文法",
+		"difficulty": 1,
+		"topic": "unknown vs any",
+		"question_format": "definition",
+		"question": "`unknown` 型と `any` 型の最も重要な違いは何ですか？",
+		"code": "function process(value: unknown) {\n  // value.toUpperCase(); // コンパイルエラー\n  if (typeof value === 'string') {\n    console.log(value.toUpperCase()); // OK\n  }\n}",
+		"options": [
+			"A. `unknown` は `any` より高速に動作する",
+			"B. `unknown` は型チェックなしに任意の操作ができる",
+			"C. `unknown` は使用前に型を絞り込む必要があり、型安全である",
+			"D. `unknown` は Java の `Object` 型と完全に同等である"
+		],
+		"correct": 2,
+		"explanation": "`unknown` は「型が不明」を表しますが、操作前に型ガードで絞り込みが必要です。`any` は型チェックを完全にスキップするため危険です。Java の `Object` 型に似た感覚を持ちやすいですが、`unknown` はより安全な設計です。型安全性を保つために `any` より `unknown` を優先しましょう。",
+		"java_trap": true,
+		"interview_likely": true
+	},
+	{
+		"id": "type_002",
+		"category": "型・文法",
+		"difficulty": 1,
+		"topic": "型推論",
+		"question_format": "definition",
+		"question": "次のコードで `x` の型は何と推論されますか？",
+		"code": "const x = [1, 2, 3];",
+		"options": [
+			"A. `Array<any>`",
+			"B. `number[]`",
+			"C. `[1, 2, 3]`（タプル型）",
+			"D. `Array<number | string>`"
+		],
+		"correct": 1,
+		"explanation": "TypeScript は配列リテラルの要素から型を推論します。`[1, 2, 3]` はすべて `number` なので `number[]` と推論されます。`const` でも配列の場合はタプル型にはならず、`as const` を付けることで `readonly [1, 2, 3]` になります。Java では型を明示する必要がありますが、TypeScript の型推論は非常に強力です。",
+		"java_trap": false,
+		"interview_likely": true
+	},
+	{
+		"id": "type_003",
+		"category": "型・文法",
+		"difficulty": 1,
+		"topic": "オプショナルチェーン",
+		"question_format": "best_impl",
+		"question": "ネストしたオブジェクトのプロパティに安全にアクセスする最も良い方法はどれですか？",
+		"code": "type User = {\n  profile?: {\n    address?: {\n      city?: string;\n    };\n  };\n};\n\nconst user: User = {};",
+		"options": [
+			"A. `user.profile.address.city`",
+			"B. `user && user.profile && user.profile.address && user.profile.address.city`",
+			"C. `user?.profile?.address?.city`",
+			"D. `(user as any).profile.address.city`"
+		],
+		"correct": 2,
+		"explanation": "オプショナルチェーン `?.` は ES2020 で追加された構文で、途中の値が `null` または `undefined` の場合に `undefined` を返します。B のように `&&` を連鎖させる方法は古いパターンで冗長です。A はランタイムエラーになり、D は型安全性を破壊します。",
+		"java_trap": true,
+		"interview_likely": true
+	},
+	{
+		"id": "type_004",
+		"category": "型・文法",
+		"difficulty": 1,
+		"topic": "interface vs type alias",
+		"question_format": "definition",
+		"question": "`interface` と `type` の違いとして正しいものはどれですか？",
+		"code": "interface Animal {\n  name: string;\n}\ninterface Animal {\n  age: number; // OK: 宣言のマージ\n}\n\ntype Vehicle = { brand: string };\n// type Vehicle = { year: number }; // エラー: 重複定義不可",
+		"options": [
+			"A. `interface` はプリミティブ型のエイリアスを作れる",
+			"B. `interface` は宣言のマージが可能で、`type` はできない",
+			"C. `type` はクラスに `implements` できない",
+			"D. `interface` はユニオン型を表現できる"
+		],
+		"correct": 1,
+		"explanation": "`interface` は同名の宣言を複数書くと自動的にマージされます（宣言マージ）。これはライブラリの型拡張に使われます。`type` は再宣言できませんが、ユニオン型やタプル型、プリミティブのエイリアスを作れます。どちらもクラスに `implements` できます。",
+		"java_trap": true,
+		"interview_likely": true
+	},
+	{
+		"id": "type_005",
+		"category": "型・文法",
+		"difficulty": 1,
+		"topic": "typeof / instanceof 型ガード",
+		"question_format": "review",
+		"question": "次のコードの型ガードについて正しい説明はどれですか？",
+		"code": "function format(value: string | number): string {\n  if (typeof value === 'string') {\n    return value.toUpperCase();\n  }\n  return value.toFixed(2);\n}",
+		"options": [
+			"A. `typeof` チェック後も `value` の型は `string | number` のままである",
+			"B. `typeof value === 'string'` のブロック内で `value` は `string` 型に絞り込まれる",
+			"C. `toFixed` は `string` 型にも使えるため型ガードは不要である",
+			"D. `instanceof` を使わないと型の絞り込みはできない"
+		],
+		"correct": 1,
+		"explanation": "TypeScript の型ガードは、`if` ブロック内でスコープの型を自動的に絞り込みます（ナローイング）。`typeof value === 'string'` の後のブロックでは `value` は `string` 型として扱われます。`typeof` はプリミティブ型に、`instanceof` はクラスのインスタンスに使います。",
+		"java_trap": false,
+		"interview_likely": true
+	},
+	{
+		"id": "react_001",
+		"category": "React/フレームワーク",
+		"difficulty": 1,
+		"topic": "useState の基本",
+		"question_format": "definition",
+		"question": "React の `useState` フックについて正しいものはどれですか？",
+		"code": "const [count, setCount] = useState(0);\n\n// 次のどれが正しい更新方法か？",
+		"options": [
+			"A. `count = count + 1` （直接代入）",
+			"B. `setCount(count + 1)` （新しい値を渡す）",
+			"C. `useState(count + 1)` （再度呼び出す）",
+			"D. `count.value = count + 1` （Java的なアクセス）"
+		],
+		"correct": 1,
+		"explanation": "`useState` が返す setter 関数（`setCount`）を使って状態を更新します。直接代入は React の再レンダリングをトリガーしないため無効です。前の状態に依存する場合は `setCount(prev => prev + 1)` の関数形式が安全です。Java のフィールド代入の感覚とは異なるので注意しましょう。",
+		"java_trap": true,
+		"interview_likely": true
+	},
+	{
+		"id": "node_001",
+		"category": "Node.js/API設計",
+		"difficulty": 1,
+		"topic": "async/await vs Promise",
+		"question_format": "best_impl",
+		"question": "次の `Promise` チェーンを `async/await` で書き直した場合、最も正しいものはどれですか？",
+		"code": "// Before\nfetch('/api/user')\n  .then(res => res.json())\n  .then(data => console.log(data))\n  .catch(err => console.error(err));",
+		"options": [
+			"A. `const data = await fetch('/api/user').json(); console.log(data);`",
+			"B. `async function load() { try { const res = await fetch('/api/user'); const data = await res.json(); console.log(data); } catch(err) { console.error(err); } }`",
+			"C. `const data = async fetch('/api/user').then(r => r.json()); console.log(data);`",
+			"D. `const res = fetch('/api/user'); const data = res.json(); console.log(data);`"
+		],
+		"correct": 1,
+		"explanation": "`async/await` は `Promise` の糖衣構文です。`await` は `async` 関数内でのみ使え、`Promise` が解決するまで待機します。`fetch` は `Response` を返すので `await` が2回必要です（fetch自体と `.json()` 呼び出しの両方）。エラー処理は `try/catch` で行います。",
+		"java_trap": false,
+		"interview_likely": true
+	},
+	{
+		"id": "type_006",
+		"category": "型・文法",
+		"difficulty": 2,
+		"topic": "Partial<T> ユーティリティ型",
+		"question_format": "definition",
+		"question": "`Partial<T>` の動作として正しいものはどれですか？",
+		"code": "type User = {\n  id: number;\n  name: string;\n  email: string;\n};\n\ntype PartialUser = Partial<User>;\n// PartialUser の型は？",
+		"options": [
+			"A. `{ id?: number; name?: string; email?: string; }` （全プロパティがオプショナル）",
+			"B. `{ id: number; name?: string; email?: string; }` （最初のみ必須）",
+			"C. `{ id: number | undefined; name: string | undefined; email: string | undefined; }` （undefined ユニオン）",
+			"D. `Partial` はインターフェースにしか使えない"
+		],
+		"correct": 0,
+		"explanation": "`Partial<T>` は型 `T` のすべてのプロパティをオプショナル（`?`）にするユーティリティ型です。これは `{ [K in keyof T]?: T[K] }` と同等の Mapped Type です。更新APIの引数型など「一部のフィールドだけ渡す」ケースに便利です。Java にはこのような型レベルの変換機能はありません。",
+		"java_trap": true,
+		"interview_likely": true
+	},
+	{
+		"id": "react_002",
+		"category": "React/フレームワーク",
+		"difficulty": 2,
+		"topic": "useEffect 依存配列",
+		"question_format": "review",
+		"question": "次のコードの問題点として最も適切なものはどれですか？",
+		"code": "function UserProfile({ userId }: { userId: number }) {\n  const [user, setUser] = useState(null);\n\n  useEffect(() => {\n    fetch(`/api/users/${userId}`)\n      .then(r => r.json())\n      .then(setUser);\n  }, []); // 依存配列が空\n\n  return <div>{user?.name}</div>;\n}",
+		"options": [
+			"A. `useState` の初期値が `null` なので型エラーになる",
+			"B. 依存配列に `userId` がないため、`userId` が変わってもデータが更新されない",
+			"C. `useEffect` 内で `async/await` を使っていないので動作しない",
+			"D. `fetch` はブラウザAPIなので `useEffect` 内では使えない"
+		],
+		"correct": 1,
+		"explanation": "`useEffect` の依存配列（第2引数）に `userId` を含めないと、コンポーネントのマウント時のみエフェクトが実行されます。`userId` が変わっても古いデータが表示されたままになります。正しくは `[userId]` と指定します。`async/await` は `useEffect` のコールバック自体を `async` にはできませんが、内部で使う関数を `async` にすることはできます。",
+		"java_trap": false,
+		"interview_likely": true
+	},
+	{
+		"id": "type_007",
+		"category": "型・文法",
+		"difficulty": 2,
+		"topic": "判別可能なユニオン型",
+		"question_format": "best_impl",
+		"question": "ユニオン型を安全に絞り込む最も TypeScript らしい方法はどれですか？",
+		"code": "type Circle = { kind: 'circle'; radius: number };\ntype Square = { kind: 'square'; side: number };\ntype Shape = Circle | Square;\n\nfunction area(shape: Shape): number {\n  // ここをどう書くか？\n}",
+		"options": [
+			"A. `if ((shape as Circle).radius) { return Math.PI * (shape as Circle).radius ** 2; }`",
+			"B. `if (shape.kind === 'circle') { return Math.PI * shape.radius ** 2; } return shape.side ** 2;`",
+			"C. `return (shape as any).radius ?? (shape as any).side ** 2;`",
+			"D. `if (shape instanceof Circle) { return Math.PI * shape.radius ** 2; }`"
+		],
+		"correct": 1,
+		"explanation": "判別可能なユニオン（Discriminated Union）は、共通のリテラル型プロパティ（`kind` など）を使って型を絞り込むパターンです。`shape.kind === 'circle'` のチェック後、TypeScript は `shape` を `Circle` 型として認識します。`instanceof` はクラスインスタンスにしか使えません。このパターンは Java の `instanceof` + キャストより安全で表現力が高いです。",
+		"java_trap": true,
+		"interview_likely": true
+	}
+]

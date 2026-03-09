@@ -1,5 +1,21 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+
+import { fileURLToPath } from "node:url";
+import react from "@astrojs/react";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "astro/config";
 
 // https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+	site: process.env.ASTRO_SITE,
+	base: process.env.ASTRO_BASE ?? "/",
+	integrations: [react()],
+	vite: {
+		plugins: [tailwindcss()],
+		resolve: {
+			alias: {
+				"@": fileURLToPath(new URL("./src", import.meta.url)),
+			},
+		},
+	},
+});
