@@ -10,7 +10,7 @@ import {
 	startSession,
 	upgradeDifficultyIfEarned,
 } from "../lib/progress";
-import { SESSION_SIZE, selectQuestions } from "../lib/questions";
+import { SESSION_SIZE, hasRemainingQuestions, selectQuestions } from "../lib/questions";
 import type { Question } from "../lib/types";
 
 type AppState = "loading" | "quiz" | "answered" | "finished";
@@ -181,6 +181,9 @@ export const DrillApp = () => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 	const [isCorrect, setIsCorrect] = useState(false);
+	const [sessionStartDifficulty, setSessionStartDifficulty] = useState<1 | 2 | 3>(
+		() => loadProgress().difficultyLevel
+	);
 
 	const currentQuestion = sessionQuestions[currentIndex];
 	const isLastQuestion = currentIndex === SESSION_SIZE - 1;
@@ -191,10 +194,15 @@ export const DrillApp = () => {
 	}, []);
 
 	const startNewSession = useCallback((p: Progress) => {
-		const selected = selectQuestions(allQuestions, p);
+		// 全問正解済みならリセットして最初から
+		const effectiveProgress = hasRemainingQuestions(allQuestions, p)
+			? p
+			: { ...p, questions: {} };
+		const selected = selectQuestions(allQuestions, effectiveProgress);
 		const ids = selected.map((q) => q.id);
-		const newProgress = startSession(p, ids);
+		const newProgress = startSession(effectiveProgress, ids);
 		saveProgress(newProgress);
+		setSessionStartDifficulty(effectiveProgress.difficultyLevel);
 		setProgress(newProgress);
 		setSessionQuestions(selected);
 		setCurrentIndex(0);
@@ -277,7 +285,7 @@ export const DrillApp = () => {
 						</span>
 					)}
 				</div>
-				{progress.difficultyLevel > loadProgress().difficultyLevel && (
+				{progress.difficultyLevel > sessionStartDifficulty && (
 					<div className="bg-green-50 border border-green-200 rounded-xl p-4 w-full text-green-700 text-sm font-medium">
 						難易度がアップしました！{" "}
 						<DifficultyStars level={progress.difficultyLevel as 1 | 2 | 3} />

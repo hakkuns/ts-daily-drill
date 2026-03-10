@@ -20,23 +20,20 @@ export const selectQuestions = (allQuestions: Question[], progress: Progress): Q
 	const wrongJavaTrap: Question[] = [];
 	const wrong: Question[] = [];
 	const unanswered: Question[] = [];
-	const correct: Question[] = [];
 
 	for (const q of available) {
 		const record = progress.questions[q.id];
 		if (!record || record.attempts === 0) {
 			unanswered.push(q);
-		} else if (record.correctCount === 0) {
+		} else if (record.correctCount > 0) {
+			// Answered correctly at least once → skip
+		} else {
+			// Never answered correctly
 			if (q.java_trap) {
 				wrongJavaTrap.push(q);
 			} else {
 				wrong.push(q);
 			}
-		} else if (record.correctCount < record.attempts) {
-			// answered wrong at least once
-			wrong.push(q);
-		} else {
-			correct.push(q);
 		}
 	}
 
@@ -61,18 +58,18 @@ export const selectQuestions = (allQuestions: Question[], progress: Progress): Q
 		selected.push(...take(unanswered, SESSION_SIZE - selected.length));
 	}
 
-	// Priority 4: correct
-	if (selected.length < SESSION_SIZE) {
-		selected.push(...take(correct, SESSION_SIZE - selected.length));
-	}
-
-	// If still not enough, use all questions (reset scenario)
-	if (selected.length < SESSION_SIZE) {
-		const fallback = allQuestions.filter((q) => !selected.some((s) => s.id === q.id));
-		selected.push(...take(fallback, SESSION_SIZE - selected.length));
-	}
-
 	return selected.slice(0, SESSION_SIZE);
+};
+
+export const hasRemainingQuestions = (
+	allQuestions: Question[],
+	progress: Progress
+): boolean => {
+	const available = allQuestions.filter((q) => q.difficulty <= progress.difficultyLevel);
+	return available.some((q) => {
+		const record = progress.questions[q.id];
+		return !record || record.attempts === 0 || record.correctCount === 0;
+	});
 };
 
 export const getSessionQuestions = (
