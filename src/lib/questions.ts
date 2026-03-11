@@ -61,10 +61,7 @@ export const selectQuestions = (allQuestions: Question[], progress: Progress): Q
 	return selected.slice(0, SESSION_SIZE);
 };
 
-export const hasRemainingQuestions = (
-	allQuestions: Question[],
-	progress: Progress
-): boolean => {
+export const hasRemainingQuestions = (allQuestions: Question[], progress: Progress): boolean => {
 	const available = allQuestions.filter((q) => q.difficulty <= progress.difficultyLevel);
 	return available.some((q) => {
 		const record = progress.questions[q.id];
