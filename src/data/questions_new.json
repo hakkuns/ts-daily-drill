@@ -1,185 +1,5 @@
 [
 	{
-		"id": "type_001",
-		"category": "型・文法",
-		"difficulty": 1,
-		"topic": "unknown vs any",
-		"question_format": "definition",
-		"question": "`unknown` 型と `any` 型の最も重要な違いは何ですか？",
-		"code": "function process(value: unknown) {\n  // value.toUpperCase(); // コンパイルエラー\n  if (typeof value === 'string') {\n    console.log(value.toUpperCase()); // OK\n  }\n}",
-		"options": [
-			"A. `unknown` は使用前に型を絞り込む必要があり、型安全である",
-			"B. `unknown` は Java の `Object` 型と完全に同等である",
-			"C. `unknown` は `any` より高速に動作する",
-			"D. `unknown` は型チェックなしに任意の操作ができる"
-		],
-		"correct": 0,
-		"explanation": "`unknown` は「型が不明」を表しますが、操作前に型ガードで絞り込みが必要です。`any` は型チェックを完全にスキップするため危険です。Java の `Object` 型に似た感覚を持ちやすいですが、`unknown` はより安全な設計です。型安全性を保つために `any` より `unknown` を優先しましょう。",
-		"interview_likely": true
-	},
-	{
-		"id": "type_002",
-		"category": "型・文法",
-		"difficulty": 1,
-		"topic": "型推論",
-		"question_format": "definition",
-		"question": "次のコードで `x` の型は何と推論されますか？",
-		"code": "const x = [1, 2, 3];",
-		"options": [
-			"A. `Array<any>`",
-			"B. `[1, 2, 3]`（タプル型）",
-			"C. `number[]`",
-			"D. `Array<number | string>`"
-		],
-		"correct": 2,
-		"explanation": "TypeScript は配列リテラルの要素から型を推論します。`[1, 2, 3]` はすべて `number` なので `number[]` と推論されます。`const` でも配列の場合はタプル型にはならず、`as const` を付けることで `readonly [1, 2, 3]` になります。Java では型を明示する必要がありますが、TypeScript の型推論は非常に強力です。",
-		"interview_likely": true
-	},
-	{
-		"id": "type_003",
-		"category": "型・文法",
-		"difficulty": 1,
-		"topic": "オプショナルチェーン",
-		"question_format": "best_impl",
-		"question": "ネストしたオブジェクトのプロパティに安全にアクセスする最も良い方法はどれですか？",
-		"code": "type User = {\n  profile?: {\n    address?: {\n      city?: string;\n    };\n  };\n};\n\nconst user: User = {};",
-		"options": [
-			"A. `(user as any).profile.address.city`",
-			"B. `user?.profile?.address?.city`",
-			"C. `user && user.profile && user.profile.address && user.profile.address.city`",
-			"D. `user.profile.address.city`"
-		],
-		"correct": 1,
-		"explanation": "オプショナルチェーン `?.` は ES2020 で追加された構文で、途中の値が `null` または `undefined` の場合に `undefined` を返します。B のように `&&` を連鎖させる方法は古いパターンで冗長です。A はランタイムエラーになり、D は型安全性を破壊します。",
-		"interview_likely": true
-	},
-	{
-		"id": "type_004",
-		"category": "型・文法",
-		"difficulty": 1,
-		"topic": "interface vs type alias",
-		"question_format": "definition",
-		"question": "`interface` と `type` の違いとして正しいものはどれですか？",
-		"code": "interface Animal {\n  name: string;\n}\ninterface Animal {\n  age: number; // OK: 宣言のマージ\n}\n\ntype Vehicle = { brand: string };\n// type Vehicle = { year: number }; // エラー: 重複定義不可",
-		"options": [
-			"A. `type` はクラスに `implements` できない",
-			"B. `interface` はユニオン型を表現できる",
-			"C. `interface` はプリミティブ型のエイリアスを作れる",
-			"D. `interface` は宣言のマージが可能で、`type` はできない"
-		],
-		"correct": 3,
-		"explanation": "`interface` は同名の宣言を複数書くと自動的にマージされます（宣言マージ）。これはライブラリの型拡張に使われます。`type` は再宣言できませんが、ユニオン型やタプル型、プリミティブのエイリアスを作れます。どちらもクラスに `implements` できます。",
-		"interview_likely": true
-	},
-	{
-		"id": "type_005",
-		"category": "型・文法",
-		"difficulty": 1,
-		"topic": "typeof / instanceof 型ガード",
-		"question_format": "review",
-		"question": "次のコードの型ガードについて正しい説明はどれですか？",
-		"code": "function format(value: string | number): string {\n  if (typeof value === 'string') {\n    return value.toUpperCase();\n  }\n  return value.toFixed(2);\n}",
-		"options": [
-			"A. `typeof value === 'string'` のブロック内で `value` は `string` 型に絞り込まれる",
-			"B. `instanceof` を使わないと型の絞り込みはできない",
-			"C. `typeof` チェック後も `value` の型は `string | number` のままである",
-			"D. `toFixed` は `string` 型にも使えるため型ガードは不要である"
-		],
-		"correct": 0,
-		"explanation": "TypeScript の型ガードは、`if` ブロック内でスコープの型を自動的に絞り込みます（ナローイング）。`typeof value === 'string'` の後のブロックでは `value` は `string` 型として扱われます。`typeof` はプリミティブ型に、`instanceof` はクラスのインスタンスに使います。",
-		"interview_likely": true
-	},
-	{
-		"id": "react_001",
-		"category": "React/フレームワーク",
-		"difficulty": 1,
-		"topic": "useState の基本",
-		"question_format": "definition",
-		"question": "React の `useState` フックについて正しいものはどれですか？",
-		"code": "const [count, setCount] = useState(0);\n\n// 次のどれが正しい更新方法か？",
-		"options": [
-			"A. `count = count + 1` （直接代入）",
-			"B. `useState(count + 1)` （再度呼び出す）",
-			"C. `count.value = count + 1` （Java的なアクセス）",
-			"D. `setCount(count + 1)` （新しい値を渡す）"
-		],
-		"correct": 3,
-		"explanation": "`useState` が返す setter 関数（`setCount`）を使って状態を更新します。直接代入は React の再レンダリングをトリガーしないため無効です。前の状態に依存する場合は `setCount(prev => prev + 1)` の関数形式が安全です。Java のフィールド代入の感覚とは異なるので注意しましょう。",
-		"interview_likely": true
-	},
-	{
-		"id": "node_001",
-		"category": "Node.js/API設計",
-		"difficulty": 1,
-		"topic": "async/await vs Promise",
-		"question_format": "best_impl",
-		"question": "次の `Promise` チェーンを `async/await` で書き直した場合、最も正しいものはどれですか？",
-		"code": "// Before\nfetch('/api/user')\n  .then(res => res.json())\n  .then(data => console.log(data))\n  .catch(err => console.error(err));",
-		"options": [
-			"A. `async function load() { try { const res = await fetch('/api/user'); const data = await res.json(); console.log(data); } catch(err) { console.error(err); } }`",
-			"B. `const data = await fetch('/api/user').json(); console.log(data);`",
-			"C. `const res = fetch('/api/user'); const data = res.json(); console.log(data);`",
-			"D. `const data = async fetch('/api/user').then(r => r.json()); console.log(data);`"
-		],
-		"correct": 0,
-		"explanation": "`async/await` は `Promise` の糖衣構文です。`await` は `async` 関数内でのみ使え、`Promise` が解決するまで待機します。`fetch` は `Response` を返すので `await` が2回必要です（fetch自体と `.json()` 呼び出しの両方）。エラー処理は `try/catch` で行います。",
-		"interview_likely": true
-	},
-	{
-		"id": "type_006",
-		"category": "型・文法",
-		"difficulty": 2,
-		"topic": "Partial<T> ユーティリティ型",
-		"question_format": "definition",
-		"question": "`Partial<T>` の動作として正しいものはどれですか？",
-		"code": "type User = {\n  id: number;\n  name: string;\n  email: string;\n};\n\ntype PartialUser = Partial<User>;\n// PartialUser の型は？",
-		"options": [
-			"A. `Partial` はインターフェースにしか使えない",
-			"B. `{ id: number; name?: string; email?: string; }` （最初のみ必須）",
-			"C. `{ id?: number; name?: string; email?: string; }` （全プロパティがオプショナル）",
-			"D. `{ id: number | undefined; name: string | undefined; email: string | undefined; }` （undefined ユニオン）"
-		],
-		"correct": 2,
-		"explanation": "`Partial<T>` は型 `T` のすべてのプロパティをオプショナル（`?`）にするユーティリティ型です。これは `{ [K in keyof T]?: T[K] }` と同等の Mapped Type です。更新APIの引数型など「一部のフィールドだけ渡す」ケースに便利です。Java にはこのような型レベルの変換機能はありません。",
-		"interview_likely": true
-	},
-	{
-		"id": "react_002",
-		"category": "React/フレームワーク",
-		"difficulty": 2,
-		"topic": "useEffect 依存配列",
-		"question_format": "review",
-		"question": "次のコードの問題点として最も適切なものはどれですか？",
-		"code": "function UserProfile({ userId }: { userId: number }) {\n  const [user, setUser] = useState(null);\n\n  useEffect(() => {\n    fetch(`/api/users/${userId}`)\n      .then(r => r.json())\n      .then(setUser);\n  }, []); // 依存配列が空\n\n  return <div>{user?.name}</div>;\n}",
-		"options": [
-			"A. `useEffect` 内で `async/await` を使っていないので動作しない",
-			"B. `useState` の初期値が `null` なので型エラーになる",
-			"C. 依存配列に `userId` がないため、`userId` が変わってもデータが更新されない",
-			"D. `fetch` はブラウザAPIなので `useEffect` 内では使えない"
-		],
-		"correct": 2,
-		"explanation": "`useEffect` の依存配列（第2引数）に `userId` を含めないと、コンポーネントのマウント時のみエフェクトが実行されます。`userId` が変わっても古いデータが表示されたままになります。正しくは `[userId]` と指定します。`async/await` は `useEffect` のコールバック自体を `async` にはできませんが、内部で使う関数を `async` にすることはできます。",
-		"interview_likely": true
-	},
-	{
-		"id": "type_007",
-		"category": "型・文法",
-		"difficulty": 2,
-		"topic": "判別可能なユニオン型",
-		"question_format": "best_impl",
-		"question": "ユニオン型を安全に絞り込む最も TypeScript らしい方法はどれですか？",
-		"code": "type Circle = { kind: 'circle'; radius: number };\ntype Square = { kind: 'square'; side: number };\ntype Shape = Circle | Square;\n\nfunction area(shape: Shape): number {\n  // ここをどう書くか？\n}",
-		"options": [
-			"A. `if (shape.kind === 'circle') { return Math.PI * shape.radius ** 2; } return shape.side ** 2;`",
-			"B. `if ((shape as Circle).radius) { return Math.PI * (shape as Circle).radius ** 2; }`",
-			"C. `if (shape instanceof Circle) { return Math.PI * shape.radius ** 2; }`",
-			"D. `return (shape as any).radius ?? (shape as any).side ** 2;`"
-		],
-		"correct": 0,
-		"explanation": "判別可能なユニオン（Discriminated Union）は、共通のリテラル型プロパティ（`kind` など）を使って型を絞り込むパターンです。`shape.kind === 'circle'` のチェック後、TypeScript は `shape` を `Circle` 型として認識します。`instanceof` はクラスインスタンスにしか使えません。このパターンは Java の `instanceof` + キャストより安全で表現力が高いです。",
-		"interview_likely": true
-	},
-	{
 		"id": "type_008",
 		"category": "型・文法",
 		"difficulty": 1,
@@ -188,10 +8,10 @@
 		"question": "`as const` アサーションを付けた場合の型推論の変化として正しいものはどれですか？",
 		"code": "const a = { x: 1, y: 'hello' };\nconst b = { x: 1, y: 'hello' } as const;",
 		"options": [
-			"A. `as const` は配列にしか効果がない",
+			"A. `a` と `b` の型は完全に同じになる",
 			"B. `b` のプロパティは `readonly` になり、値はリテラル型として推論される",
-			"C. `b.x` の型は `number` のまま変わらない",
-			"D. `a` と `b` の型は完全に同じになる"
+			"C. `as const` は配列にしか効果がない",
+			"D. `b.x` の型は `number` のまま変わらない"
 		],
 		"correct": 1,
 		"explanation": "`as const` を付けると、オブジェクトの全プロパティが `readonly` になり、値はワイドニングされずリテラル型として推論されます。`a.x` は `number` 型ですが、`b.x` は `1` 型になります。定数オブジェクトやルックアップテーブルを型安全に定義するときに有用です。",
@@ -206,12 +26,12 @@
 		"question": "`Pick<T, K>` と `Omit<T, K>` の説明として正しいものはどれですか？",
 		"code": "type User = { id: number; name: string; email: string; password: string };\n\ntype PublicUser = Omit<User, 'password'>;\ntype IdAndName = Pick<User, 'id' | 'name'>;",
 		"options": [
-			"A. `Pick` は指定したキーを除外し、`Omit` は指定したキーだけを残す",
-			"B. `Omit` はインターフェースにのみ使用できる",
+			"A. `Pick` は指定したキーだけを残し、`Omit` は指定したキーを除外する",
+			"B. `Pick` は指定したキーを除外し、`Omit` は指定したキーだけを残す",
 			"C. どちらも同じ動作で、引数の順序だけが異なる",
-			"D. `Pick` は指定したキーだけを残し、`Omit` は指定したキーを除外する"
+			"D. `Omit` はインターフェースにのみ使用できる"
 		],
-		"correct": 3,
+		"correct": 0,
 		"explanation": "`Pick<T, K>` は型 `T` からキー `K` のプロパティだけを選び取ります。`Omit<T, K>` は型 `T` からキー `K` のプロパティを取り除きます。APIレスポンスから機密フィールドを除くときや、フォームの一部フィールドだけを扱うときに頻繁に使われます。",
 		"interview_likely": true
 	},
@@ -224,12 +44,12 @@
 		"question": "次のコードで `in` 演算子が型ナローイングに使われています。その動作として正しいものはどれですか？",
 		"code": "type Cat = { meow: () => void };\ntype Dog = { bark: () => void };\n\nfunction makeSound(animal: Cat | Dog) {\n  if ('meow' in animal) {\n    animal.meow();\n  } else {\n    animal.bark();\n  }\n}",
 		"options": [
-			"A. `in` による絞り込みは `interface` には使えず `type` にしか効かない",
-			"B. `'meow' in animal` が true のブロックでは `animal` は `Cat` 型に絞り込まれる",
+			"A. `'meow' in animal` が true のブロックでは `animal` は `Cat` 型に絞り込まれる",
+			"B. `in` 演算子はランタイムでプロパティを追加するため型が変わる",
 			"C. `in` 演算子はオブジェクトのプロトタイプチェーンを無視して判定する",
-			"D. `in` 演算子はランタイムでプロパティを追加するため型が変わる"
+			"D. `in` による絞り込みは `interface` には使えず `type` にしか効かない"
 		],
-		"correct": 1,
+		"correct": 0,
 		"explanation": "`in` 演算子はオブジェクトに指定したプロパティが存在するかチェックし、TypeScript はその結果を使って型を絞り込みます。`'meow' in animal` が `true` のブランチでは `animal` は `Cat` 型として扱われます。判別可能なユニオンのように共通リテラルプロパティがない場合の型ナローイングに便利です。",
 		"interview_likely": true
 	},
@@ -242,10 +62,10 @@
 		"question": "次のコードで `AB` 型が持つプロパティとして正しいものはどれですか？",
 		"code": "type A = { x: number; y: number };\ntype B = { y: number; z: number };\n\ntype AorB = A | B;\ntype AB = A & B;",
 		"options": [
-			"A. `A | B` は両方の型のプロパティを必ずすべて持たなければならない",
-			"B. `AorB` は `x`, `y`, `z` すべてのプロパティに型安全にアクセスできる",
+			"A. `AorB` は `x`, `y`, `z` すべてのプロパティに型安全にアクセスできる",
+			"B. `A & B` は `A` と `B` のどちらか一方のプロパティを持てばよい",
 			"C. `AB` は `x`, `y`, `z` をすべて持ち、`AorB` は `y` だけに安全にアクセスできる",
-			"D. `A & B` は `A` と `B` のどちらか一方のプロパティを持てばよい"
+			"D. `A | B` は両方の型のプロパティを必ずすべて持たなければならない"
 		],
 		"correct": 2,
 		"explanation": "Intersection型 `A & B` は `A` と `B` の両方のプロパティをすべて持つ型です。Union型 `A | B` は `A` か `B` のどちらかであるため、共通プロパティ（`y`）にしか安全にアクセスできません。JavaのインターフェースのAND条件に近いのはIntersection型ですが、セマンティクスは異なります。",
@@ -261,11 +81,11 @@
 		"code": "// どの実装が正しいか？",
 		"options": [
 			"A. `function first(arr: any[]): any { return arr[0]; }`",
-			"B. `function first<T extends object>(arr: T[]): T { return arr[0]; }`",
-			"C. `function first<T>(arr: T[]): T | undefined { return arr[0]; }`",
+			"B. `function first<T>(arr: T[]): T | undefined { return arr[0]; }`",
+			"C. `function first<T extends object>(arr: T[]): T { return arr[0]; }`",
 			"D. `function first(arr: unknown[]): unknown { return arr[0]; }`"
 		],
-		"correct": 2,
+		"correct": 1,
 		"explanation": "ジェネリクスを使った `first<T>(arr: T[]): T | undefined` が最も型安全です。戻り値を `T | undefined` にするのは、空配列の場合に `undefined` が返るためです。A は `any` で型安全性を失い、C は `object` 制約でプリミティブ配列を受け取れず、D は呼び出し側で型情報が失われます。",
 		"interview_likely": true
 	},
@@ -280,8 +100,8 @@
 		"options": [
 			"A. 型注釈と同様だが、推論された具体的な型（リテラル型など）を保持したまま型チェックできる",
 			"B. 型アサーション（`as`）と同じ効果で、型チェックをスキップする",
-			"C. コンパイル後も `satisfies` のチェックがランタイムで実行される",
-			"D. `satisfies` はインターフェースにのみ使える"
+			"C. `satisfies` はインターフェースにのみ使える",
+			"D. コンパイル後も `satisfies` のチェックがランタイムで実行される"
 		],
 		"correct": 0,
 		"explanation": "`satisfies` は値が特定の型を満たすかチェックしつつ、推論された具体的な型（リテラル型など）を変数に保持します。型注釈 `: Palette` を付けると `palette.red` は `string` 型になりますが、`satisfies` を使うと `'#ff0000'` というリテラル型を保ったままチェックできます。型安全性と型の精度を両立するための演算子です。",
@@ -297,9 +117,9 @@
 		"code": "type Shape = 'circle' | 'square';\n\nfunction handleShape(shape: Shape) {\n  switch (shape) {\n    case 'circle': return 'round';\n    case 'square': return 'box';\n    default:\n      const _exhaustive: never = shape; // never型\n  }\n}",
 		"options": [
 			"A. 全ケースを網羅した後の `default` では取りうる型が存在しないため `never` になる",
-			"B. `Shape` 型に `never` が含まれているため伝播する",
-			"C. `switch` 文の `default` では常に `never` 型になる",
-			"D. `never` は `void` と同じで「何も返さない」を意味する"
+			"B. `switch` 文の `default` では常に `never` 型になる",
+			"C. `never` は `void` と同じで「何も返さない」を意味する",
+			"D. `Shape` 型に `never` が含まれているため伝播する"
 		],
 		"correct": 0,
 		"explanation": "`never` 型は「値が存在しえない」型です。`circle` と `square` の両ケースを処理した後の `default` では `shape` が取りうる型が残っておらず `never` になります。この性質を利用した網羅性チェック（Exhaustive Check）は、Union型にケースを追加した際にコンパイルエラーで検出できる強力なパターンです。",
@@ -314,13 +134,13 @@
 		"question": "`string` を渡すと `string` を、`number` を渡すと `number` を返す関数の実装として最も正しいものはどれですか？",
 		"code": "// どの実装が正しいか？",
 		"options": [
-			"A. `function double(x: string): string;\nfunction double(x: number): number;\nfunction double(x: string | number): string | number { return typeof x === 'string' ? x + x : x * 2; }`",
+			"A. `function double(x: any): any { return x + x; }`",
 			"B. `const double = <T>(x: T): T => (x as any) * 2;`",
 			"C. `function double(x: string | number): string | number { return typeof x === 'string' ? x + x : x * 2; }`",
-			"D. `function double(x: any): any { return x + x; }`"
+			"D. `function double(x: string): string;\nfunction double(x: number): number;\nfunction double(x: string | number): string | number { return typeof x === 'string' ? x + x : x * 2; }`"
 		],
-		"correct": 0,
-		"explanation": "関数オーバーロードを使うと、入力型に応じた戻り値の型を正確に表現できます。オーバーロードシグネチャを先に宣言し、実装シグネチャで実際の処理を書きます。Aだと呼び出し側で `double('hi')` の戻り値が `string | number` になってしまいますが、Bなら `string` として扱えます。",
+		"correct": 3,
+		"explanation": "関数オーバーロードを使うと、入力型に応じた戻り値の型を正確に表現できます。オーバーロードシグネチャを先に宣言し、実装シグネチャで実際の処理を書きます。Cだと呼び出し側で `double('hi')` の戻り値が `string | number` になってしまいますが、Dなら `string` として扱えます。",
 		"interview_likely": true
 	},
 	{
@@ -333,9 +153,9 @@
 		"code": "function isString(value: unknown): value is string {\n  return typeof value === 'string';\n}\n\nconst val: unknown = 'hello';\nif (isString(val)) {\n  console.log(val.toUpperCase()); // val は string 型\n}",
 		"options": [
 			"A. `value is string` という型述語を宣言することで、呼び出し元でも型が絞り込まれるようになる",
-			"B. `value is string` はランタイムで型チェックを追加する特殊な構文である",
-			"C. `unknown` 型を引数に取る場合にのみ使える構文である",
-			"D. `boolean` を返す関数は必ず `value is T` 形式で書かなければならない"
+			"B. `boolean` を返す関数は必ず `value is T` 形式で書かなければならない",
+			"C. `value is string` はランタイムで型チェックを追加する特殊な構文である",
+			"D. `unknown` 型を引数に取る場合にのみ使える構文である"
 		],
 		"correct": 0,
 		"explanation": "型述語 `value is string` を戻り値型に書くと、その関数が `true` を返したブロックで TypeScript が引数の型を絞り込みます。単に `boolean` を返す場合は呼び出し元でナローイングが起きませんが、型述語を使うと外部関数でも型の絞り込みを伝播させられます。ランタイムには影響せず、コンパイル時の型情報だけです。",
@@ -350,10 +170,10 @@
 		"question": "次の `IsArray<T>` 型の評価結果として正しいものはどれですか？",
 		"code": "type IsArray<T> = T extends any[] ? true : false;\n\ntype A = IsArray<number[]>; // ?\ntype B = IsArray<string>;   // ?\ntype C = IsArray<never>;    // ?",
 		"options": [
-			"A. A: `true`, B: `false`, C: `boolean`",
+			"A. A: `true`, B: `false`, C: `false`",
 			"B. A: `true`, B: `false`, C: `never`",
 			"C. A: `boolean`, B: `false`, C: `never`",
-			"D. A: `true`, B: `false`, C: `false`"
+			"D. A: `true`, B: `false`, C: `boolean`"
 		],
 		"correct": 1,
 		"explanation": "Conditional Types は `T extends U ? X : Y` の形式で条件分岐します。`number[]` は `any[]` を extends するので `A = true`、`string` は extends しないので `B = false` になります。`never` を条件型に渡すと分配されずに即座に `never` が返ります（`never extends anything` は always never）。この挙動は実用上重要なエッジケースです。",
@@ -386,10 +206,10 @@
 		"question": "型 `T` のすべてのプロパティの値を `string` に変換するMapped Typeとして正しいものはどれですか？",
 		"code": "type User = { id: number; name: string; active: boolean };",
 		"options": [
-			"A. `type Stringify<T> = Record<T, string>;`",
+			"A. `type Stringify<T> = { [K in T]: string };`",
 			"B. `type Stringify<T> = { K: string };`",
 			"C. `type Stringify<T> = { [K in keyof T]: string };`",
-			"D. `type Stringify<T> = { [K in T]: string };`"
+			"D. `type Stringify<T> = Record<T, string>;`"
 		],
 		"correct": 2,
 		"explanation": "`[K in keyof T]` はMapped Typeの構文で、`keyof T` で得たキーの集合をイテレートします。`: string` で各プロパティの値型を `string` に上書きします。Aは `in T` が誤り（`keyof T` が必要）、Cはイテレートしていない、Dは `T` が直接 `Record` のキーになれないためエラーです。",
@@ -404,12 +224,12 @@
 		"question": "次のコードで `handler` への代入が型エラーになる理由として正しいものはどれですか？",
 		"code": "type Animal = { name: string };\ntype Dog = { name: string; breed: string };\n\nlet handler: (a: Animal) => void;\nhandler = (d: Dog) => console.log(d.breed); // エラー？",
 		"options": [
-			"A. 関数の引数型は反変（contravariant）なので、より具体的な型を引数に取る関数は代入できない",
-			"B. TypeScript では関数型同士の代入は一切できない",
-			"C. `Animal` と `Dog` は `extends` で関係付けられていないため代入できない",
-			"D. 戻り値型が `void` なので代入できない"
+			"A. 戻り値型が `void` なので代入できない",
+			"B. `Animal` と `Dog` は `extends` で関係付けられていないため代入できない",
+			"C. 関数の引数型は反変（contravariant）なので、より具体的な型を引数に取る関数は代入できない",
+			"D. TypeScript では関数型同士の代入は一切できない"
 		],
-		"correct": 0,
+		"correct": 2,
 		"explanation": "関数の引数型は反変です。`handler` は `Animal`（`name` だけ持つ）を受け取れる関数を期待しますが、代入しようとする関数は `Dog`（`breed` も必要）を前提にしています。呼び出し元が `Animal` を渡すと `breed` が存在せずランタイムエラーになるため、TypeScript はこれを型エラーとします。戻り値型は共変なので方向が逆です。",
 		"interview_likely": true
 	},
@@ -422,12 +242,12 @@
 		"question": "Strategyパターンの目的として最も適切なものはどれですか？",
 		"code": "",
 		"options": [
-			"A. アルゴリズムをカプセル化し、実行時に交換可能にする",
-			"B. オブジェクト間の通知機構を提供する",
-			"C. クラスのインスタンス生成を1つに制限する",
+			"A. クラスのインスタンス生成を1つに制限する",
+			"B. アルゴリズムをカプセル化し、実行時に交換可能にする",
+			"C. オブジェクト間の通知機構を提供する",
 			"D. 複雑なオブジェクトの生成手順を分離する"
 		],
-		"correct": 0,
+		"correct": 1,
 		"explanation": "Strategyパターンはアルゴリズムのファミリーを定義し、それぞれをカプセル化して交換可能にします。クライアントコードを変更せずにアルゴリズムを切り替えられるのが特徴です。JavaのComparatorを差し替えるイメージに近いですが、TypeScriptでは関数型でより簡潔に表現できます。",
 		"interview_likely": true
 	},
@@ -440,12 +260,12 @@
 		"question": "TypeScriptのモジュールシステムにおいてSingletonパターンのクラスを使わない方が良い理由として最も適切なものはどれですか？",
 		"code": "",
 		"options": [
-			"A. ESモジュールはファイルごとにキャッシュされるため、モジュールのエクスポートが自然にSingletonになる",
-			"B. Singletonはコンパイルエラーになる場合がある",
-			"C. TypeScriptはSingletonクラスの構文をサポートしていない",
-			"D. Singletonはメモリリークを必ず引き起こすため避けるべきだ"
+			"A. TypeScriptはSingletonクラスの構文をサポートしていない",
+			"B. Singletonはメモリリークを必ず引き起こすため避けるべきだ",
+			"C. ESモジュールはファイルごとにキャッシュされるため、モジュールのエクスポートが自然にSingletonになる",
+			"D. Singletonはコンパイルエラーになる場合がある"
 		],
-		"correct": 0,
+		"correct": 2,
 		"explanation": "Node.jsのESモジュールはimport時にモジュールをキャッシュするため、同じモジュールを複数箇所でimportしても同一インスタンスが返ります。つまりモジュールレベルでexportした定数やオブジェクトが自然にSingletonとして機能します。クラスでSingletonを実装するとテストでのモック差し替えが難しくなるデメリットもあります。",
 		"interview_likely": false
 	},
@@ -458,13 +278,13 @@
 		"question": "ソート戦略を切り替えられる関数として最もTypeScriptらしい実装はどれですか？",
 		"code": "type SortStrategy<T> = (a: T, b: T) => number;",
 		"options": [
-			"A. `function sort(arr: any[]): any[] { if (mode === 'asc') { ... } else { ... } }`（グローバル変数で制御）",
-			"B. `class Sorter { sort(arr: any[], strategy: string): any[] { ... } }`（戦略名を文字列で渡す）",
+			"A. `class Sorter { sort(arr: any[], strategy: string): any[] { ... } }`（戦略名を文字列で渡す）",
+			"B. `abstract class Sorter { abstract sort(arr: any[]): any[]; }`（継承で実装）",
 			"C. `const sort = <T>(arr: T[], strategy: SortStrategy<T>): T[] => [...arr].sort(strategy);`",
-			"D. `abstract class Sorter { abstract sort(arr: any[]): any[]; }`（継承で実装）"
+			"D. `function sort(arr: any[]): any[] { if (mode === 'asc') { ... } else { ... } }`（グローバル変数で制御）"
 		],
 		"correct": 2,
-		"explanation": "TypeScriptでは関数を第一級オブジェクトとして扱えるため、戦略パターンを関数として直接渡す実装が最も簡潔です。Bは型安全で、配列のコピーを作ってから並び替えるためイミュータブルです。Aは文字列で戦略を指定するため型安全でなく、Dはクラス継承が不要な複雑さを生みます。",
+		"explanation": "TypeScriptでは関数を第一級オブジェクトとして扱えるため、戦略パターンを関数として直接渡す実装が最も簡潔です。Cは型安全で、配列のコピーを作ってから並び替えるためイミュータブルです。Aは文字列で戦略を指定するため型安全でなく、Bはクラス継承が不要な複雑さを生みます。",
 		"interview_likely": true
 	},
 	{
@@ -477,9 +297,9 @@
 		"code": "class EventEmitter {\n  private listeners: any[] = [];\n\n  subscribe(listener: any) {\n    this.listeners.push(listener);\n  }\n\n  emit(event: any) {\n    this.listeners.forEach(l => l(event));\n  }\n}",
 		"options": [
 			"A. `any` を多用しており、イベント型とリスナー型が保証されていない",
-			"B. `subscribe` はPromiseを返すべきである",
+			"B. `private` を使っているのでJavaScriptランタイムでアクセスできない",
 			"C. `forEach` の代わりに `for...of` を使うべきである",
-			"D. `private` を使っているのでJavaScriptランタイムでアクセスできない"
+			"D. `subscribe` はPromiseを返すべきである"
 		],
 		"correct": 0,
 		"explanation": "`any` を多用するとイベントペイロードの型とリスナー関数の引数型が保証されず、呼び出し側で型エラーを検出できません。ジェネリクスを使い `EventEmitter<T>` として `listeners: Array<(event: T) => void>` にすることで型安全なObserverを実装できます。なお、`private` はコンパイル時のみの制約でランタイムには残りません。",
@@ -495,12 +315,12 @@
 		"code": "type Shape = 'circle' | 'square';\ntype Circle = { kind: 'circle'; radius: number };\ntype Square = { kind: 'square'; side: number };",
 		"options": [
 			"A. `function createShape(type: string, value: number): any { ... }`",
-			"B. `function createShape(type: 'circle', r: number): Circle;\nfunction createShape(type: 'square', s: number): Square;\nfunction createShape(type: Shape, v: number): Circle | Square { ... }`",
-			"C. `class ShapeFactory { static create(type: any): any { ... } }`",
-			"D. `const createShape = (type: Shape): object => ({ kind: type })`"
+			"B. `class ShapeFactory { static create(type: any): any { ... } }`",
+			"C. `const createShape = (type: Shape): object => ({ kind: type })`",
+			"D. `function createShape(type: 'circle', r: number): Circle;\nfunction createShape(type: 'square', s: number): Square;\nfunction createShape(type: Shape, v: number): Circle | Square { ... }`"
 		],
-		"correct": 1,
-		"explanation": "関数オーバーロードを使うと、引数の型に応じて戻り値の型を正確に絞り込めます。`createShape('circle', 5)` の戻り値が `Circle` 型として推論されるため、呼び出し元でキャストが不要です。AとCは `any` で型安全性を損ない、Dは戻り値が `object` で具体的な型情報が失われます。",
+		"correct": 3,
+		"explanation": "関数オーバーロードを使うと、引数の型に応じて戻り値の型を正確に絞り込めます。`createShape('circle', 5)` の戻り値が `Circle` 型として推論されるため、呼び出し元でキャストが不要です。AとBは `any` で型安全性を損ない、Cは戻り値が `object` で具体的な型情報が失われます。",
 		"interview_likely": true
 	},
 	{
@@ -512,12 +332,12 @@
 		"question": "TypeScriptの `@decorator` 構文とGoFのDecoratorパターンの関係として正しいものはどれですか？",
 		"code": "",
 		"options": [
-			"A. GoFのDecoratorパターンはTypeScriptでは実現できない",
-			"B. TypeScriptのデコレータはJavaのアノテーションとまったく同じ仕組みである",
-			"C. TypeScriptの `@decorator` はGoFのDecoratorパターンを完全に実装したものである",
-			"D. GoFのDecoratorパターンはオブジェクトの振る舞いを動的に拡張するが、TypeScriptのデコレータはクラス・メソッドなどへのメタプログラミング機構である"
+			"A. GoFのDecoratorパターンはオブジェクトの振る舞いを動的に拡張するが、TypeScriptのデコレータはクラス・メソッドなどへのメタプログラミング機構である",
+			"B. TypeScriptの `@decorator` はGoFのDecoratorパターンを完全に実装したものである",
+			"C. TypeScriptのデコレータはJavaのアノテーションとまったく同じ仕組みである",
+			"D. GoFのDecoratorパターンはTypeScriptでは実現できない"
 		],
-		"correct": 3,
+		"correct": 0,
 		"explanation": "GoFのDecoratorパターンはインターフェースを通じたラッパーで振る舞いを動的合成しますが、TypeScriptの `@decorator` はクラス・メソッド・プロパティに付加するメタプログラミング機構です。JavaのアノテーションはリフレクションAPIで処理しますが、TypeScriptのデコレータは関数として実行されます。同じ「デコレータ」という名前でも意味が異なります。",
 		"interview_likely": false
 	},
@@ -536,7 +356,7 @@
 			"D. セッターを連鎖するBuilderクラス: `new ClientBuilder().url(...).timeout(...).build()`"
 		],
 		"correct": 1,
-		"explanation": "TypeScriptではOptionsオブジェクトパターンが最も実用的です。引数の順序を覚える必要がなく、省略可能なフィールドを `?` で表現でき、型補完が効きます。Builderクラス（C）はJavaでよく使われますが、TypeScriptではOptionsオブジェクトで同等の可読性を実現できます。Aはパラメータが増えるほど呼び出し側が壊れやすくなります。",
+		"explanation": "TypeScriptではOptionsオブジェクトパターンが最も実用的です。引数の順序を覚える必要がなく、省略可能なフィールドを `?` で表現でき、型補完が効きます。Builderクラス（D）はJavaでよく使われますが、TypeScriptではOptionsオブジェクトで同等の可読性を実現できます。Aはパラメータが増えるほど呼び出し側が壊れやすくなります。",
 		"interview_likely": true
 	},
 	{
@@ -548,13 +368,13 @@
 		"question": "プラグイン拡張可能なログ出力システムを設計する場合、最もTypeScriptらしいアプローチはどれですか？",
 		"code": "",
 		"options": [
-			"A. グローバルなログ設定オブジェクトにフック関数を登録する",
-			"B. `type LogTransport = (level: string, message: string) => void` を定義し、複数のtransportを配列で持つ関数ベースの設計",
-			"C. 抽象クラス `Logger` を継承して各ロガーを実装し、`instanceof` で分岐する",
-			"D. `interface ILogger` を実装するクラスを作り、DIコンテナで管理する"
+			"A. 抽象クラス `Logger` を継承して各ロガーを実装し、`instanceof` で分岐する",
+			"B. `interface ILogger` を実装するクラスを作り、DIコンテナで管理する",
+			"C. `type LogTransport = (level: string, message: string) => void` を定義し、複数のtransportを配列で持つ関数ベースの設計",
+			"D. グローバルなログ設定オブジェクトにフック関数を登録する"
 		],
-		"correct": 1,
-		"explanation": "関数型のTransport定義（B）はTypeScriptで最もシンプルに拡張性を実現します。クラス階層なしにtransportを追加でき、テストではモック関数を差し込むだけです。Aは継承でOCP違反になりやすく、Cは必要以上に重厚な構造です。Dはグローバル状態を使うためテスト困難になります。",
+		"correct": 2,
+		"explanation": "関数型のTransport定義（C）はTypeScriptで最もシンプルに拡張性を実現します。クラス階層なしにtransportを追加でき、テストではモック関数を差し込むだけです。Aは継承でOCP違反になりやすく、Bは必要以上に重厚な構造です。Dはグローバル状態を使うためテスト困難になります。",
 		"interview_likely": false
 	},
 	{
@@ -566,12 +386,12 @@
 		"question": "次のコードのOCP（開放閉鎖原則）違反として最も適切な指摘はどれですか？",
 		"code": "function calcDiscount(type: string, price: number): number {\n  if (type === 'vip') return price * 0.8;\n  if (type === 'member') return price * 0.9;\n  if (type === 'guest') return price;\n  throw new Error('unknown type');\n}",
 		"options": [
-			"A. 関数の引数が2つあるので複雑すぎる",
-			"B. 新しい割引タイプを追加するたびにこの関数を修正する必要があり、拡張に対して閉じていない",
-			"C. `string` 型より `number` 型を使うべきである",
-			"D. `throw` を使っているので副作用がある"
+			"A. 新しい割引タイプを追加するたびにこの関数を修正する必要があり、拡張に対して閉じていない",
+			"B. `string` 型より `number` 型を使うべきである",
+			"C. `throw` を使っているので副作用がある",
+			"D. 関数の引数が2つあるので複雑すぎる"
 		],
-		"correct": 1,
+		"correct": 0,
 		"explanation": "OCP（開放閉鎖原則）は「拡張に対して開いており、修正に対して閉じている」べきという原則です。このコードは新しい割引タイプを追加するたびに関数本体を修正する必要があります。`type DiscountStrategy = (price: number) => number` を定義し、タイプをキーとするマップに戦略関数を登録する形にすると、既存コードを変更せずに拡張できます。",
 		"interview_likely": true
 	},
@@ -584,13 +404,13 @@
 		"question": "DIコンテナを使わずにTypeScriptで依存性注入を実現する最も実用的なパターンはどれですか？",
 		"code": "type UserRepository = { findById: (id: number) => Promise<User> };\ntype User = { id: number; name: string };",
 		"options": [
-			"A. リポジトリのクラス名を文字列で渡してリフレクションで解決する",
-			"B. サービスクラスのコンストラクタ内で `new Repository()` を直接呼び出す",
-			"C. 関数の引数として依存オブジェクトを受け取る: `const createService = (repo: UserRepository) => ({ ... })`",
-			"D. グローバルシングルトンのリポジトリをimportして使う"
+			"A. サービスクラスのコンストラクタ内で `new Repository()` を直接呼び出す",
+			"B. グローバルシングルトンのリポジトリをimportして使う",
+			"C. リポジトリのクラス名を文字列で渡してリフレクションで解決する",
+			"D. 関数の引数として依存オブジェクトを受け取る: `const createService = (repo: UserRepository) => ({ ... })`"
 		],
-		"correct": 2,
-		"explanation": "関数の引数として依存オブジェクトを受け取るパターン（B）はシンプルで型安全なDIです。インターフェース（type）に依存するためテスト時にモックを差し込みやすく、DIコンテナ不要で軽量です。Aは強結合でテスト不可、Cはグローバル状態でテスト困難、Dはリフレクションが必要でTypeScriptのコンパイル時の恩恵を受けられません。",
+		"correct": 3,
+		"explanation": "関数の引数として依存オブジェクトを受け取るパターン（D）はシンプルで型安全なDIです。インターフェース（type）に依存するためテスト時にモックを差し込みやすく、DIコンテナ不要で軽量です。Aは強結合でテスト不可、Bはグローバル状態でテスト困難、Cはリフレクションが必要でTypeScriptのコンパイル時の恩恵を受けられません。",
 		"interview_likely": true
 	},
 	{
@@ -602,12 +422,12 @@
 		"question": "次のコードで最も深刻な問題はどれですか？",
 		"code": "function processData(data: any): any {\n  const result: any = {};\n  result.name = data.name; // タイポあり\n  result.age = data.age;\n  return result;\n}",
 		"options": [
-			"A. `any` を多用しているためタイポ（`data.name`）がコンパイルエラーにならない",
-			"B. `return` 文が関数の最後にある",
-			"C. `result` の初期化に `{}` を使っている",
+			"A. `result` の初期化に `{}` を使っている",
+			"B. `any` を多用しているためタイポ（`data.name`）がコンパイルエラーにならない",
+			"C. `return` 文が関数の最後にある",
 			"D. 関数名に `process` を使っている"
 		],
-		"correct": 0,
+		"correct": 1,
 		"explanation": "`any` を使うと TypeScript の型チェックが無効になるため、`data.name`（`name` のタイポ）のようなミスがコンパイル時に検出されません。具体的な型を宣言すると存在しないプロパティへのアクセスはコンパイルエラーになります。`any` は型安全性を完全に破壊する最後の手段で、通常は避けるべきです。",
 		"interview_likely": true
 	},
@@ -620,12 +440,12 @@
 		"question": "次のコードで型安全性の観点から改善すべき点として最も重要なものはどれですか？",
 		"code": "function getUser(id) {\n  return fetch(`/api/users/${id}`)\n    .then(res => res.json());\n}",
 		"options": [
-			"A. 引数 `id` と戻り値に型が指定されておらず、`id` は暗黙的に `any` 型になる",
-			"B. `fetch` の代わりに `axios` を使うべきである",
-			"C. テンプレートリテラルは使わず文字列連結にすべきである",
-			"D. Promiseを返す関数は `async/await` で書くべきである"
+			"A. `fetch` の代わりに `axios` を使うべきである",
+			"B. 引数 `id` と戻り値に型が指定されておらず、`id` は暗黙的に `any` 型になる",
+			"C. Promiseを返す関数は `async/await` で書くべきである",
+			"D. テンプレートリテラルは使わず文字列連結にすべきである"
 		],
-		"correct": 0,
+		"correct": 1,
 		"explanation": "TypeScript の `noImplicitAny` 設定が有効な場合、型注釈のない引数はエラーになります。また `res.json()` の戻り値は `Promise<any>` なので戻り値型も不明です。正しくは `id: number`、戻り値型は `Promise<User>` のように明示すべきです。型アノテーションは関数の仕様を明確にするドキュメントでもあります。",
 		"interview_likely": true
 	},
@@ -638,12 +458,12 @@
 		"question": "次のコードで型安全性の観点から問題がある行はどれですか？",
 		"code": "function checkStatus(code: number) {\n  if (code == '200') {      // (1)\n    return 'OK';\n  }\n  if (code === 200) {       // (2)\n    return 'success';\n  }\n}",
 		"options": [
-			"A. 関数が `string | undefined` を返すことが問題",
-			"B. `return` 文に `'OK'` を使っているのが問題",
-			"C. (1)の `code == '200'` はTypeScriptでは型エラーになり得るが、そもそも `number` と `string` を比較する設計が問題",
-			"D. (2)の `===` は冗長で `==` で十分"
+			"A. (1)の `code == '200'` はTypeScriptでは型エラーになり得るが、そもそも `number` と `string` を比較する設計が問題",
+			"B. (2)の `===` は冗長で `==` で十分",
+			"C. 関数が `string | undefined` を返すことが問題",
+			"D. `return` 文に `'OK'` を使っているのが問題"
 		],
-		"correct": 2,
+		"correct": 0,
 		"explanation": "TypeScript の `strict` モードでは `number` 型の値を `string` と `==` で比較するとコンパイルエラーになります。JavaScriptの暗黙型変換に依存した `==` は型安全でなく、TypeScriptでは `===` を使うべきです。さらに `code` が `number` なら最初から `=== 200`（数値）で比較するのが正しい設計です。",
 		"interview_likely": true
 	},
@@ -656,10 +476,10 @@
 		"question": "次のコードの最も重大な問題点はどれですか？",
 		"code": "async function loadUser(id: number): Promise<User> {\n  const res = await fetch(`/api/users/${id}`);\n  return res.json() as Promise<User>;\n}",
 		"options": [
-			"A. `id` 引数の型は `string` にすべきである",
+			"A. `async` キーワードが不要である",
 			"B. `res.ok` のチェックがなく、4xx/5xxレスポンスでもエラーにならない",
 			"C. `Promise<User>` の型アサーションは正しい使い方である",
-			"D. `async` キーワードが不要である"
+			"D. `id` 引数の型は `string` にすべきである"
 		],
 		"correct": 1,
 		"explanation": "`fetch` はHTTPエラーステータス（404、500など）でも `Promise` を `reject` しません。`res.ok` を確認しないと、404のエラーレスポンスのJSONを正常なデータとして処理してしまいます。`if (!res.ok) throw new Error(...)` を追加すべきです。また `as Promise<User>` はランタイムの型保証をしないため危険です。",
@@ -674,12 +494,12 @@
 		"question": "次のコードの問題点として最も正確なものはどれですか？",
 		"code": "async function saveAndNotify(data: Data) {\n  const result = save(data); // save は async 関数\n  if (result.success) {      // ここで問題\n    await notify();\n  }\n}",
 		"options": [
-			"A. `async` 関数内で `if` 文を使ってはいけない",
-			"B. `save(data)` に `await` が付いておらず、`result` は `Promise<Result>` のまま。`result.success` は `undefined` になる",
-			"C. `Data` 型の引数はオブジェクトなので参照渡しになる",
-			"D. `notify()` に `await` が必要ない"
+			"A. `save(data)` に `await` が付いておらず、`result` は `Promise<Result>` のまま。`result.success` は `undefined` になる",
+			"B. `notify()` に `await` が必要ない",
+			"C. `async` 関数内で `if` 文を使ってはいけない",
+			"D. `Data` 型の引数はオブジェクトなので参照渡しになる"
 		],
-		"correct": 1,
+		"correct": 0,
 		"explanation": "`save` が `async` 関数なら `save(data)` の戻り値は `Promise<Result>` です。`await` しないと `result` は `Promise` オブジェクトであり、`result.success` にアクセスしても `undefined` になります。TypeScript のストリクトな設定では `Promise` に存在しないプロパティアクセスで警告が出ます。`await save(data)` が正しい呼び出しです。",
 		"interview_likely": true
 	},
@@ -693,11 +513,11 @@
 		"code": "function parseConfig(raw: unknown): Config {\n  const config = raw as Config;  // (1)\n  return config;\n}\n\nconst cfg = parseConfig(JSON.parse(input));\nconsole.log(cfg.timeout.toFixed()); // (2)",
 		"options": [
 			"A. `JSON.parse` の結果を渡しているのが問題",
-			"B. `unknown` 型を引数にしているのが問題",
-			"C. `toFixed()` は `number` 型にしか使えないため(2)がエラー",
-			"D. `raw as Config` はランタイムの型検証をせず、実際に `Config` でない値でも通過してしまう"
+			"B. `toFixed()` は `number` 型にしか使えないため(2)がエラー",
+			"C. `raw as Config` はランタイムの型検証をせず、実際に `Config` でない値でも通過してしまう",
+			"D. `unknown` 型を引数にしているのが問題"
 		],
-		"correct": 3,
+		"correct": 2,
 		"explanation": "`as Config` は TypeScript コンパイラを説得するだけで、ランタイムで実際に `Config` 型かどうかはチェックしません。`raw` が `Config` の形を持っていない場合、後続の `cfg.timeout.toFixed()` でランタイムエラーが発生します。型アサーションの代わりに型ガード（`typeof`、`in`、zodなどのバリデーション）を使うべきです。",
 		"interview_likely": true
 	},
@@ -710,12 +530,12 @@
 		"question": "次のコードで型安全性の観点から問題となる箇所はどれですか？",
 		"code": "const users = new Map<string, User>();\n\nfunction greet(id: string): string {\n  const user = users.get(id);\n  return `Hello, ${user.name}`; // ここ\n}",
 		"options": [
-			"A. `string` 型のキーはMapに使えない",
-			"B. テンプレートリテラルの中で `user.name` を使ってはいけない",
-			"C. `Map.get()` は `User | undefined` を返すため、`user.name` アクセス前に `undefined` チェックが必要",
-			"D. `Map` の代わりに `Record` を使うべきである"
+			"A. `Map` の代わりに `Record` を使うべきである",
+			"B. `string` 型のキーはMapに使えない",
+			"C. テンプレートリテラルの中で `user.name` を使ってはいけない",
+			"D. `Map.get()` は `User | undefined` を返すため、`user.name` アクセス前に `undefined` チェックが必要"
 		],
-		"correct": 2,
+		"correct": 3,
 		"explanation": "`Map.get()` の戻り値は `User | undefined` です。`undefined` の可能性をチェックせず `user.name` にアクセスするとランタイムエラーになります。`strictNullChecks` が有効なら TypeScript はこの行でコンパイルエラーを出します。`if (user === undefined) return '...'` か `user?.name ?? 'Guest'` などで対処すべきです。",
 		"interview_likely": true
 	},
@@ -729,9 +549,9 @@
 		"code": "class UserService {\n  async getUser(id: number) { /* DBアクセス */ }\n  async sendEmail(user: User) { /* メール送信 */ }\n  async generateReport(): Promise<string> { /* CSV生成 */ }\n  async saveToCache(user: User) { /* Redis操作 */ }\n}",
 		"options": [
 			"A. 単一責任原則（SRP）に違反しており、DB・メール・レポート・キャッシュと複数の責務を持っている",
-			"B. メソッド数が多すぎてパフォーマンスに影響する",
-			"C. `async` メソッドが多すぎる",
-			"D. `class` ではなく `interface` で定義すべきである"
+			"B. `async` メソッドが多すぎる",
+			"C. `class` ではなく `interface` で定義すべきである",
+			"D. メソッド数が多すぎてパフォーマンスに影響する"
 		],
 		"correct": 0,
 		"explanation": "単一責任原則（SRP）は「クラスを変更する理由は1つだけであるべき」という原則です。このクラスはDB・メール・レポート・キャッシュと変更理由が4つあります。`UserRepository`、`EmailService`、`ReportGenerator`、`UserCache` に分割すべきです。TypeScriptでは関数+型の組み合わせで各責務を表現するとさらにシンプルになります。",
@@ -747,11 +567,11 @@
 		"code": "type ApiResponse = {\n  status: string;     // 'success' | 'error' のいずれか\n  data?: object;      // 成功時のみ存在\n  message?: string;   // エラー時のみ存在\n};",
 		"options": [
 			"A. `optional` プロパティが多すぎる",
-			"B. `string` と `object` が緩すぎる型で、成功・失敗を区別するDiscriminated Unionにすべきである",
-			"C. プロパティ名をスネークケースにすべきである",
-			"D. `type` ではなく `interface` で定義すべきである"
+			"B. `type` ではなく `interface` で定義すべきである",
+			"C. `string` と `object` が緩すぎる型で、成功・失敗を区別するDiscriminated Unionにすべきである",
+			"D. プロパティ名をスネークケースにすべきである"
 		],
-		"correct": 1,
+		"correct": 2,
 		"explanation": "現在の型では成功時に `message` が存在したり、エラー時に `data` が存在してもコンパイルエラーになりません。Discriminated Union を使い `type ApiResponse = { status: 'success'; data: unknown } | { status: 'error'; message: string }` とすることで、成功・失敗それぞれで存在すべきプロパティを型で強制できます。",
 		"interview_likely": true
 	},
@@ -764,12 +584,12 @@
 		"question": "次のモジュール構造で循環依存が発生しているパターンとして正しいものはどれですか？",
 		"code": "// a.ts\nimport { funcB } from './b';\nexport const funcA = () => funcB();\n\n// b.ts\nimport { funcA } from './a';\nexport const funcB = () => funcA();",
 		"options": [
-			"A. 循環依存は関数間にのみ発生し、型のimportは問題ない",
-			"B. この構造は正常で循環依存ではない",
-			"C. `a.ts` が `b.ts` を、`b.ts` が `a.ts` をimportしており、循環依存が発生している",
-			"D. 循環依存はTypeScriptではコンパイルエラーになるため実行前に気付ける"
+			"A. この構造は正常で循環依存ではない",
+			"B. 循環依存はTypeScriptではコンパイルエラーになるため実行前に気付ける",
+			"C. 循環依存は関数間にのみ発生し、型のimportは問題ない",
+			"D. `a.ts` が `b.ts` を、`b.ts` が `a.ts` をimportしており、循環依存が発生している"
 		],
-		"correct": 2,
+		"correct": 3,
 		"explanation": "`a.ts` → `b.ts` → `a.ts` と循環しており、モジュール初期化時に一方がまだ未評価の状態で参照されると `undefined` になるランタイムバグが起きます。TypeScriptはこれをコンパイルエラーにしません。解決策は共通の依存を `c.ts` に切り出すか、関数を同一ファイルにまとめることです。型のみのimport（`import type`）は問題になりません。",
 		"interview_likely": false
 	},
@@ -782,12 +602,12 @@
 		"question": "次の `any` を使った関数を型安全にリファクタリングした場合、最も適切なものはどれですか？",
 		"code": "function getLength(value: any): any {\n  return value.length;\n}",
 		"options": [
-			"A. `function getLength<T extends { length: number }>(value: T): number { return value.length; }`",
+			"A. `function getLength(value: unknown): unknown { return (value as any).length; }`",
 			"B. `function getLength(value: string | any[]): number { return value.length; }`",
-			"C. `function getLength(value: unknown): unknown { return (value as any).length; }`",
+			"C. `function getLength<T extends { length: number }>(value: T): number { return value.length; }`",
 			"D. `function getLength(value: object): number { return (value as any).length; }`"
 		],
-		"correct": 0,
+		"correct": 2,
 		"explanation": "ジェネリクス制約 `T extends { length: number }` を使うと、`length` プロパティを持つ任意の型（`string`、配列、`NodeList` など）を受け取れます。Bも動作しますが、型が限定されています。Cは最も汎用的で型安全な実装です。Dは `object` が `string` を含まずAは `as any` で型安全性を損ないます。",
 		"interview_likely": true
 	},
@@ -800,13 +620,13 @@
 		"question": "次の `as` を使ったコードを型ガードでリファクタリングした場合、最も安全なものはどれですか？",
 		"code": "function processInput(input: unknown): string {\n  return (input as string).toUpperCase();\n}",
 		"options": [
-			"A. `function processInput(input: unknown): string { if (typeof input !== 'string') throw new Error('Not a string'); return input.toUpperCase(); }`",
-			"B. `function processInput(input: unknown): string { return String(input).toUpperCase(); }`",
-			"C. `function processInput(input: any): string { return input.toUpperCase(); }`",
-			"D. `function processInput(input: unknown): string { return (input as unknown as string).toUpperCase(); }`"
+			"A. `function processInput(input: unknown): string { return (input as unknown as string).toUpperCase(); }`",
+			"B. `function processInput(input: any): string { return input.toUpperCase(); }`",
+			"C. `function processInput(input: unknown): string { return String(input).toUpperCase(); }`",
+			"D. `function processInput(input: unknown): string { if (typeof input !== 'string') throw new Error('Not a string'); return input.toUpperCase(); }`"
 		],
-		"correct": 0,
-		"explanation": "型ガード（B）はランタイムで実際に型を確認してから処理するため安全です。`as string` はコンパイラを黙らせるだけでランタイム保証がなく、`string` 以外の値が来るとエラーになります。Dは `String(input)` で強制変換するため `[object Object]` などになる可能性があります。Bが最も明示的で安全です。",
+		"correct": 3,
+		"explanation": "型ガード（D）はランタイムで実際に型を確認してから処理するため安全です。`as string` はコンパイラを黙らせるだけでランタイム保証がなく、`string` 以外の値が来るとエラーになります。Cは `String(input)` で強制変換するため `[object Object]` などになる可能性があります。Dが最も明示的で安全です。",
 		"interview_likely": true
 	},
 	{
@@ -818,12 +638,12 @@
 		"question": "次のコードをDiscriminated Unionにリファクタリングした場合、最も適切なものはどれですか？",
 		"code": "function handle(type: string, payload: any) {\n  if (type === 'ADD') { /* payload.item を追加 */ }\n  if (type === 'REMOVE') { /* payload.id で削除 */ }\n}",
 		"options": [
-			"A. `class Action { constructor(public type: string, public payload: any) {} }`",
-			"B. `type Action = { type: 'ADD'; item: Item } | { type: 'REMOVE'; id: number };\nfunction handle(action: Action) { if (action.type === 'ADD') { action.item; } }`",
-			"C. `function handle(type: 'ADD' | 'REMOVE', payload: any) { ... }`",
-			"D. `function handle(action: Record<string, unknown>) { ... }`"
+			"A. `function handle(type: 'ADD' | 'REMOVE', payload: any) { ... }`",
+			"B. `function handle(action: Record<string, unknown>) { ... }`",
+			"C. `type Action = { type: 'ADD'; item: Item } | { type: 'REMOVE'; id: number };\nfunction handle(action: Action) { if (action.type === 'ADD') { action.item; } }`",
+			"D. `class Action { constructor(public type: string, public payload: any) {} }`"
 		],
-		"correct": 1,
+		"correct": 2,
 		"explanation": "Discriminated Union（B）を使うと、`type` で絞り込んだ後に対応するペイロードの型が自動的に決まります。`action.type === 'ADD'` ブランチでは `action.item` が型安全にアクセスできます。Aは `payload` が `any` のままで改善が不十分です。これはReduxのActionパターンでもおなじみの型安全な設計です。",
 		"interview_likely": true
 	},
@@ -837,9 +657,9 @@
 		"code": "class Animal { move() { ... } }\nclass Dog extends Animal { bark() { ... } }\nclass RobotDog extends Dog { charge() { ... } }",
 		"options": [
 			"A. 継承は親クラスの変更が全子孫に波及するが、コンポジションは依存する機能だけを組み合わせるため変更の影響が限定される",
-			"B. TypeScriptはクラス継承を非推奨にしている",
-			"C. コンポジションはメモリ使用量を削減できる",
-			"D. コンポジションはクラスより実行速度が速い"
+			"B. コンポジションはクラスより実行速度が速い",
+			"C. TypeScriptはクラス継承を非推奨にしている",
+			"D. コンポジションはメモリ使用量を削減できる"
 		],
 		"correct": 0,
 		"explanation": "継承は「is-a」関係で密結合を生み、親クラスの変更が全サブクラスに影響します。コンポジションは「has-a」関係で、必要な振る舞いだけを組み合わせられます。TypeScriptでは `type Movable = { move: () => void }` のような型を組み合わせることで柔軟な設計が可能です。Javaのクラス継承に慣れた方は「継承より合成」の原則を意識しましょう。",
@@ -854,13 +674,13 @@
 		"question": "次の `switch` 文をStrategyパターンにリファクタリングした場合、最も適切なものはどれですか？",
 		"code": "function format(value: number, type: string): string {\n  switch (type) {\n    case 'currency': return `¥${value}`;\n    case 'percent': return `${value}%`;\n    default: return String(value);\n  }\n}",
 		"options": [
-			"A. `eval` を使ってフォーマット文字列を動的に評価する",
+			"A. `if/else if` に置き換える",
 			"B. `class Formatter { format(value: number): string { return String(value); } }` を継承して各フォーマッターを実装する",
-			"C. `if/else if` に置き換える",
+			"C. `eval` を使ってフォーマット文字列を動的に評価する",
 			"D. `const formatters: Record<string, (v: number) => string> = { currency: v => '¥' + v, percent: v => v + '%' };\nconst format = (v: number, type: string) => formatters[type]?.(v) ?? String(v);`"
 		],
 		"correct": 3,
-		"explanation": "フォーマット関数をオブジェクトマップ（B）に格納すると、新しいフォーマッターを追加するときにコア関数を変更せずにマップにエントリを追加するだけで済みます。`type` をキーにした `Record` を使うことで型補完も効きます。`switch` は追加のたびに修正が必要でOCPに違反します。",
+		"explanation": "フォーマット関数をオブジェクトマップ（D）に格納すると、新しいフォーマッターを追加するときにコア関数を変更せずにマップにエントリを追加するだけで済みます。`type` をキーにした `Record` を使うことで型補完も効きます。`switch` は追加のたびに修正が必要でOCPに違反します。",
 		"interview_likely": true
 	},
 	{
@@ -872,9 +692,9 @@
 		"question": "次のコールバックネストを `async/await` に変換した場合、最も正しいものはどれですか？",
 		"code": "getUser(id, (user) => {\n  getPosts(user.id, (posts) => {\n    getComments(posts[0].id, (comments) => {\n      render(user, posts, comments);\n    });\n  });\n});",
 		"options": [
-			"A. `Promise.all([getUser(id), getPosts(id), getComments(id)]).then(([u, p, c]) => render(u, p, c));`",
+			"A. `const user = getUser(id); const posts = getPosts(user.id); const comments = getComments(posts[0].id); render(user, posts, comments);`",
 			"B. `async function load(id) { const user = await getUser(id); const posts = await getPosts(user.id); const comments = await getComments(posts[0].id); render(user, posts, comments); }`",
-			"C. `const user = getUser(id); const posts = getPosts(user.id); const comments = getComments(posts[0].id); render(user, posts, comments);`",
+			"C. `Promise.all([getUser(id), getPosts(id), getComments(id)]).then(([u, p, c]) => render(u, p, c));`",
 			"D. `const result = await Promise.race([getUser(id), getPosts(id)]);`"
 		],
 		"correct": 1,
@@ -890,12 +710,12 @@
 		"question": "次の重複した型定義をジェネリクスでリファクタリングした場合、最も適切なものはどれですか？",
 		"code": "type NumberResult = { data: number; error: string | null };\ntype StringResult = { data: string; error: string | null };\ntype UserResult   = { data: User;   error: string | null };",
 		"options": [
-			"A. `type Result = { data: number | string | User; error: string | null };`",
-			"B. `type Result = { data: any; error: string | null };`",
-			"C. `type Result<T> = { data: T; error: string | null };`",
-			"D. `interface Result { data: unknown; error: string | null; }` をextendsして各型を作る"
+			"A. `type Result = { data: any; error: string | null };`",
+			"B. `type Result<T> = { data: T; error: string | null };`",
+			"C. `interface Result { data: unknown; error: string | null; }` をextendsして各型を作る",
+			"D. `type Result = { data: number | string | User; error: string | null };`"
 		],
-		"correct": 2,
+		"correct": 1,
 		"explanation": "ジェネリクス型 `Result<T>` にすると `Result<number>`、`Result<string>`、`Result<User>` のように再利用でき、定義は1つで済みます。Aの `any` は型安全性を失い、Cはインターフェース拡張で意味的に異なり、Dは全型をUnionにまとめるため絞り込みが必要になります。",
 		"interview_likely": true
 	},
@@ -908,13 +728,13 @@
 		"question": "次の関数を型安全かつ拡張しやすくリファクタリングする案として最も優れているものはどれですか？",
 		"code": "function notify(type: string, msg: string) {\n  if (type === 'email') sendEmail(msg);\n  if (type === 'sms') sendSms(msg);\n  if (type === 'push') sendPush(msg);\n}",
 		"options": [
-			"A. `switch` 文に変換する",
-			"B. `type` を `'email' | 'sms' | 'push'` のUnionにする",
+			"A. `type` を `'email' | 'sms' | 'push'` のUnionにする",
+			"B. `switch` 文に変換する",
 			"C. `class Notifier { notify(type: string, msg: string): void { ... } }` を継承してオーバーライドする",
 			"D. `type NotifyType = 'email' | 'sms' | 'push';\nconst notifiers: Record<NotifyType, (msg: string) => void> = { email: sendEmail, sms: sendSms, push: sendPush };\nconst notify = (type: NotifyType, msg: string) => notifiers[type](msg);`"
 		],
 		"correct": 3,
-		"explanation": "BはUnion型でキーを制限しつつ、マップパターンで拡張性を確保しています。新しい通知チャンネルを追加するときは `Record` にエントリを追加するだけで、`notify` 関数の本体を変更する必要がありません。Aは `if` 文が残り改善不十分、Cは継承が不要な複雑さを生み、Dは `switch` でOCP違反が続きます。",
+		"explanation": "DはUnion型でキーを制限しつつ、マップパターンで拡張性を確保しています。新しい通知チャンネルを追加するときは `Record` にエントリを追加するだけで、`notify` 関数の本体を変更する必要がありません。Aは `if` 文が残り改善不十分、Cは継承が不要な複雑さを生み、Bは `switch` でOCP違反が続きます。",
 		"interview_likely": false
 	},
 	{
@@ -926,12 +746,12 @@
 		"question": "次のコードにSRPとOCPを同時に適用する際の主な変更方針として最も正しいものはどれですか？",
 		"code": "class OrderService {\n  process(order: Order) {\n    validate(order);\n    saveToDb(order);\n    sendConfirmEmail(order);\n    generateInvoice(order);\n  }\n}",
 		"options": [
-			"A. 処理をすべて非同期（`async`）にする",
+			"A. 各ステップを `OrderStep` インターフェースとして分離し、`OrderService` はステップの配列を受け取って実行する。ステップの追加は配列への追加だけで行える",
 			"B. `process` をプライベートメソッドに分割する",
 			"C. メソッドチェーンで書き直す",
-			"D. 各ステップを `OrderStep` インターフェースとして分離し、`OrderService` はステップの配列を受け取って実行する。ステップの追加は配列への追加だけで行える"
+			"D. 処理をすべて非同期（`async`）にする"
 		],
-		"correct": 3,
+		"correct": 0,
 		"explanation": "SRPの観点では各ステップを独立したモジュールに分離します。OCPの観点では新しいステップを追加するとき `OrderService` の本体を変更しないよう、ステップを外から渡す設計にします。`type OrderStep = (order: Order) => void` のような型を定義し、`OrderService` がステップ配列を実行するパイプライン構造が理想的です。",
 		"interview_likely": false
 	},
@@ -944,13 +764,13 @@
 		"question": "次の型定義を、より表現力の高い型に移行した場合、最も適切なものはどれですか？",
 		"code": "type User = {\n  status: string;  // 'active' | 'suspended' | 'deleted'\n  deletedAt?: Date; // status === 'deleted' のときのみ存在\n};",
 		"options": [
-			"A. `deletedAt` を必須プロパティにして常にセットする",
+			"A. `status` を `boolean` にして `isDeleted` と `isSuspended` に分ける",
 			"B. `status` を `enum` にして `UserStatus.ACTIVE` のように使う",
-			"C. `type User = { status: 'active' | 'suspended' } | { status: 'deleted'; deletedAt: Date };`",
-			"D. `status` を `boolean` にして `isDeleted` と `isSuspended` に分ける"
+			"C. `deletedAt` を必須プロパティにして常にセットする",
+			"D. `type User = { status: 'active' | 'suspended' } | { status: 'deleted'; deletedAt: Date };`"
 		],
-		"correct": 2,
-		"explanation": "Discriminated Union（B）を使うと、`status: 'deleted'` のときに `deletedAt` が必ず存在することを型で強制できます。現状の型では `status: 'active'` でも `deletedAt` を持てるため矛盾した状態が表現できてしまいます。TypeScriptの型は「不正な状態を表現不可能にする」設計を目指すべきです。",
+		"correct": 3,
+		"explanation": "Discriminated Union（D）を使うと、`status: 'deleted'` のときに `deletedAt` が必ず存在することを型で強制できます。現状の型では `status: 'active'` でも `deletedAt` を持てるため矛盾した状態が表現できてしまいます。TypeScriptの型は「不正な状態を表現不可能にする」設計を目指すべきです。",
 		"interview_likely": true
 	},
 	{
@@ -962,12 +782,12 @@
 		"question": "`useRef` と `useState` の最も重要な違いとして正しいものはどれですか？",
 		"code": "",
 		"options": [
-			"A. `useRef` の値を変更しても再レンダリングは発生しないが、`useState` の更新は再レンダリングをトリガーする",
-			"B. `useRef` はコンポーネントがマウントされたときにのみ値を保持する",
-			"C. `useState` はDOMへの参照を取得するためにのみ使う",
+			"A. `useRef` はコンポーネントがマウントされたときにのみ値を保持する",
+			"B. `useState` はDOMへの参照を取得するためにのみ使う",
+			"C. `useRef` の値を変更しても再レンダリングは発生しないが、`useState` の更新は再レンダリングをトリガーする",
 			"D. `useRef` は文字列型の値しか保持できない"
 		],
-		"correct": 0,
+		"correct": 2,
 		"explanation": "`useRef` は `.current` プロパティを直接変更しても React の再レンダリングをトリガーしません。タイマーIDの保持やDOMへの参照取得など、レンダリングに影響しない値の保管に使います。`useState` は値の変更をReactが追跡し、変更のたびにコンポーネントを再レンダリングします。",
 		"interview_likely": true
 	},
@@ -981,9 +801,9 @@
 		"code": "useEffect(() => { /* A */ });           // 依存配列なし\nuseEffect(() => { /* B */ }, []);        // 空配列\nuseEffect(() => { /* C */ }, [count]);   // 値あり",
 		"options": [
 			"A. Aは毎レンダリング後、Bは初回マウント時のみ、Cは初回と `count` が変わるたびに実行される",
-			"B. すべて非同期で実行されるため、タイミングの違いはない",
-			"C. A・B・Cはすべて初回マウント時にのみ実行される",
-			"D. Aは実行されず、BとCのみ実行される"
+			"B. A・B・Cはすべて初回マウント時にのみ実行される",
+			"C. Aは実行されず、BとCのみ実行される",
+			"D. すべて非同期で実行されるため、タイミングの違いはない"
 		],
 		"correct": 0,
 		"explanation": "依存配列を省略すると毎レンダリング後に実行されます。空配列 `[]` を渡すとマウント時のみ実行されます（クラスコンポーネントの `componentDidMount` 相当）。値を含む配列を渡すと、初回マウット時と、その値が変化するたびに実行されます。依存配列の理解はReactでバグを避けるための基礎知識です。",
@@ -999,11 +819,11 @@
 		"code": "function UserCard({ user }: { user: User }) {\n  const displayName = useMemo(\n    () => `${user.firstName} ${user.lastName}`,\n    [user.firstName, user.lastName]\n  );\n  return <div>{displayName}</div>;\n}",
 		"options": [
 			"A. `useMemo` はオブジェクトにしか使えない",
-			"B. `useMemo` の中でテンプレートリテラルを使ってはいけない",
-			"C. 文字列結合のような軽量な計算に `useMemo` を使うと、メモ化のオーバーヘッドが計算コストを上回る可能性がある",
-			"D. 依存配列に2つの値を渡してはいけない"
+			"B. 依存配列に2つの値を渡してはいけない",
+			"C. `useMemo` の中でテンプレートリテラルを使ってはいけない",
+			"D. 文字列結合のような軽量な計算に `useMemo` を使うと、メモ化のオーバーヘッドが計算コストを上回る可能性がある"
 		],
-		"correct": 2,
+		"correct": 3,
 		"explanation": "`useMemo` はキャッシュの作成・比較・保持にオーバーヘッドがあります。文字列結合のような非常に軽量な計算ではそのコストが計算コストを上回り、むしろパフォーマンスが悪化します。`useMemo` は重い計算（フィルタリング、ソート、複雑な派生状態）に限定して使うべきです。",
 		"interview_likely": true
 	},
@@ -1017,11 +837,11 @@
 		"code": "",
 		"options": [
 			"A. コード行数を減らすため",
-			"B. `useEffect` はカスタムHookの中でしか使えないため",
-			"C. カスタムHookにするとパフォーマンスが向上するため",
-			"D. 複数のコンポーネントで同じステートフルなロジック（`useState` + `useEffect` など）を再利用するため"
+			"B. カスタムHookにするとパフォーマンスが向上するため",
+			"C. 複数のコンポーネントで同じステートフルなロジック（`useState` + `useEffect` など）を再利用するため",
+			"D. `useEffect` はカスタムHookの中でしか使えないため"
 		],
-		"correct": 3,
+		"correct": 2,
 		"explanation": "カスタムHookの主な目的はステートフルなロジックの再利用です。`useState` や `useEffect` を含む処理を複数のコンポーネントで使いたい場合、カスタムHookに抽出することでロジックを共有できます。単に計算を切り出したいだけなら通常の関数で十分です。カスタムHookはあくまでHooksを内包するロジックの再利用が目的です。",
 		"interview_likely": true
 	},
@@ -1034,12 +854,12 @@
 		"question": "認証ユーザー情報をアプリ全体で使う場合、最も適切なアプローチはどれですか？",
 		"code": "",
 		"options": [
-			"A. 認証情報をLocalStorageに保存して各コンポーネントで直接読む",
-			"B. `React.createContext` と `useContext` でContextを作り、Providerで囲む",
-			"C. ルートコンポーネントから全コンポーネントにpropsでバケツリレーする",
-			"D. グローバル変数 `window.currentUser` に保存する"
+			"A. ルートコンポーネントから全コンポーネントにpropsでバケツリレーする",
+			"B. グローバル変数 `window.currentUser` に保存する",
+			"C. `React.createContext` と `useContext` でContextを作り、Providerで囲む",
+			"D. 認証情報をLocalStorageに保存して各コンポーネントで直接読む"
 		],
-		"correct": 1,
+		"correct": 2,
 		"explanation": "認証情報のようにアプリ全体で参照されるグローバルな状態にはContextが適しています。propsのバケツリレーは中間コンポーネントが不要なpropsを受け取る「prop drilling」を引き起こします。`window.currentUser` やLocalStorageの直接参照はReactの再レンダリングと連動しないため、状態変化がUIに反映されません。",
 		"interview_likely": true
 	},
@@ -1053,8 +873,8 @@
 		"code": "",
 		"options": [
 			"A. 状態の型が `string` のとき",
-			"B. コンポーネントが初めてマウントされるとき",
-			"C. `useEffect` と組み合わせて使うとき",
+			"B. `useEffect` と組み合わせて使うとき",
+			"C. コンポーネントが初めてマウントされるとき",
 			"D. 複数の関連する状態が連動して変化し、状態遷移のロジックが複雑なとき"
 		],
 		"correct": 3,
@@ -1088,13 +908,13 @@
 		"question": "Next.js App Routerで「DBからデータを取得してリストを表示し、各アイテムにいいねボタンがある」場合、最も適切なコンポーネント分割はどれですか？",
 		"code": "",
 		"options": [
-			"A. Client ComponentはJavaScriptを実行できないため、ボタンはServer Componentにする",
-			"B. ページ全体を `'use client'` のClient Componentにする",
+			"A. ページ全体を `'use client'` のClient Componentにする",
+			"B. Server ComponentはデータをDB取得禁止なのでClient ComponentでfetchAPIを使う",
 			"C. リスト取得はServer Component、いいねボタンは `'use client'` のClient Componentに分割する",
-			"D. Server Componentはデータ取得禁止なのでClient ComponentでfetchAPIを使う"
+			"D. Client ComponentはJavaScriptを実行できないため、ボタンはServer Componentにする"
 		],
 		"correct": 2,
-		"explanation": "Server Componentはデータ取得（DB・API）をサーバーサイドで行いHTMLを生成します。インタラクティブな要素（クリックイベントなどのHooks利用）はClient Componentで実装します。「データ取得はServer、インタラクションはClient」に分割するのが最もパフォーマンス効率の良い設計です。Cは逆の説明で誤りです。",
+		"explanation": "Server Componentはデータ取得（DB・API）をサーバーサイドで行いHTMLを生成します。インタラクティブな要素（クリックイベントなどのHooks利用）はClient Componentで実装します。「データ取得はServer、インタラクションはClient」に分割するのが最もパフォーマンス効率の良い設計です。Bは逆の説明で誤りです。",
 		"interview_likely": true
 	},
 	{
@@ -1106,10 +926,10 @@
 		"question": "次のコードの問題点として最も正確なものはどれですか？",
 		"code": "const [items, setItems] = useState<string[]>([]);\n\nfunction addItem(item: string) {\n  items.push(item);    // 直接変更\n  setItems(items);     // 同じ参照を渡す\n}",
 		"options": [
-			"A. `setItems` の引数には関数のみ渡せる",
-			"B. `string[]` 型の配列には `push` で要素を追加できない",
+			"A. `push` はTypeScriptでは使えない",
+			"B. `setItems` の引数には関数のみ渡せる",
 			"C. `items` を直接変更して同じ参照を `setItems` に渡すと、Reactが変化を検知できず再レンダリングされない",
-			"D. `push` はTypeScriptでは使えない"
+			"D. `string[]` 型の配列には `push` で要素を追加できない"
 		],
 		"correct": 2,
 		"explanation": "Reactは `setItems` に渡された参照が前と同一かどうかで変化を検知します。`items.push()` で同じ配列を変更しても参照は変わらないため、Reactは「変化なし」と判断して再レンダリングしません。正しくは `setItems([...items, item])` のようにスプレッド演算子で新しい配列を作って渡します。stateはイミュータブルに更新することが鉄則です。",
@@ -1124,10 +944,10 @@
 		"question": "条件分岐の中でHooksを呼び出してはいけない理由として最も正確なものはどれですか？",
 		"code": "// NG例\nfunction Comp({ show }: { show: boolean }) {\n  if (show) {\n    const [val, setVal] = useState(0); // ルール違反\n  }\n}",
 		"options": [
-			"A. 条件分岐内でHooksを使うとメモリリークが発生するため",
+			"A. `if` 文の中ではTypeScriptの型推論が正しく動作しないため",
 			"B. ReactはHooksを呼び出した順序でstateを管理するため、条件によって呼び出し順が変わるとstateが対応するHookとズレてしまう",
 			"C. `useState` はコンポーネントのトップレベルでのみimportできるため",
-			"D. `if` 文の中ではTypeScriptの型推論が正しく動作しないため"
+			"D. 条件分岐内でHooksを使うとメモリリークが発生するため"
 		],
 		"correct": 1,
 		"explanation": "ReactはコンポーネントごとにHooksの呼び出し順序（インデックス）でstateを管理します。条件分岐でHookの呼び出しが省略されると、レンダリングごとにインデックスがズレて別のHookのstateが返ってきます。これはReactの内部的なリンクリスト構造に起因する制約です。ESLintの `eslint-plugin-react-hooks` がこのルール違反を検出します。",
@@ -1142,13 +962,13 @@
 		"question": "ブラウザのオンライン/オフライン状態を購読してUIに反映する場合、最も適切な実装はどれですか？",
 		"code": "",
 		"options": [
-			"A. `setInterval` で定期的に `navigator.onLine` をポーリングする",
-			"B. `useState(navigator.onLine)` だけで取得する",
+			"A. `useState(navigator.onLine)` だけで取得する",
+			"B. `setInterval` で定期的に `navigator.onLine` をポーリングする",
 			"C. `useSyncExternalStore` で `navigator.onLine` を外部ストアとして購読する",
 			"D. `useEffect` でイベントリスナーを登録してstateを更新する"
 		],
 		"correct": 2,
-		"explanation": "`useSyncExternalStore`（React 18+）は外部ストア（ReactのstateでないデータソースのブラウザAPI含む）を購読するために設計されました。`useEffect` でのリスナー登録（B）も動作しますが、Concurrent Modeでのティアリング（tearing）問題が起きることがあります。`useSyncExternalStore` はこの問題を解決した公式の方法です。",
+		"explanation": "`useSyncExternalStore`（React 18+）は外部ストア（ReactのstateでないデータソースのブラウザAPI含む）を購読するために設計されました。`useEffect` でのリスナー登録（D）も動作しますが、Concurrent Modeでのティアリング（tearing）問題が起きることがあります。`useSyncExternalStore` はこの問題を解決した公式の方法です。",
 		"interview_likely": false
 	},
 	{
@@ -1161,11 +981,11 @@
 		"code": "// 使用例\n<Tabs>\n  <Tabs.List>\n    <Tabs.Tab>Tab 1</Tabs.Tab>\n  </Tabs.List>\n  <Tabs.Panel>Content</Tabs.Panel>\n</Tabs>",
 		"options": [
 			"A. コンポーネントのレンダリングを並列化してパフォーマンスを上げる",
-			"B. コンポーネントを複数のファイルに分割して整理するための命名規則",
+			"B. 親コンポーネントが状態を管理し、子コンポーネントがContextで暗黙的に状態を共有することで、柔軟なUI構成を実現する",
 			"C. Server ComponentsとClient Componentsを組み合わせるための手法",
-			"D. 親コンポーネントが状態を管理し、子コンポーネントがContextで暗黙的に状態を共有することで、柔軟なUI構成を実現する"
+			"D. コンポーネントを複数のファイルに分割して整理するための命名規則"
 		],
-		"correct": 3,
+		"correct": 1,
 		"explanation": "Compound Componentパターンでは親（`Tabs`）が状態を管理し、Contextで子（`Tabs.Tab`、`Tabs.Panel`）と共有します。利用者は子コンポーネントを自由に配置でき、propsのバケツリレーなしに状態が連動します。shadcn/uiやHeadless UIでよく見られる設計パターンです。",
 		"interview_likely": true
 	},
@@ -1178,12 +998,12 @@
 		"question": "子コンポーネントへのコールバックを親から渡す際に不要な再レンダリングを防ぐ正しい組み合わせはどれですか？",
 		"code": "function Parent() {\n  const [count, setCount] = useState(0);\n  // onClickを子に渡す\n}",
 		"options": [
-			"A. `useCallback` で `onClick` をメモ化し、子を `React.memo` で包む",
-			"B. 子を `React.memo` で包むだけで十分",
-			"C. `useMemo` で子コンポーネント全体をメモ化する",
-			"D. コールバックを `useRef` に格納して渡す"
+			"A. 子を `React.memo` で包むだけで十分",
+			"B. `useMemo` で子コンポーネント全体をメモ化する",
+			"C. コールバックを `useRef` に格納して渡す",
+			"D. `useCallback` で `onClick` をメモ化し、子を `React.memo` で包む"
 		],
-		"correct": 0,
+		"correct": 3,
 		"explanation": "`React.memo` は受け取るpropsが変わらなければ再レンダリングをスキップしますが、親が再レンダリングされるたびにコールバック関数は新しい参照として生成されます。そのため `React.memo` だけでは効果がありません。`useCallback` でコールバックをメモ化（依存配列が変わらない限り同じ参照を返す）することで、`React.memo` が正しく機能します。",
 		"interview_likely": true
 	},
@@ -1196,12 +1016,12 @@
 		"question": "REST APIにおけるHTTPメソッドの使い分けとして最も正しいものはどれですか？",
 		"code": "",
 		"options": [
-			"A. `GET` は取得（副作用なし）、`POST` は作成、`PUT`/`PATCH` は更新、`DELETE` は削除",
-			"B. `PUT` は部分更新、`PATCH` は完全置換に使う",
+			"A. `GET` でリソースの作成、`POST` でリソースの取得を行う",
+			"B. `GET` は取得（副作用なし）、`POST` は作成、`PUT`/`PATCH` は更新、`DELETE` は削除",
 			"C. すべての操作に `POST` を使い、ボディで操作種別を指定する",
-			"D. `GET` でリソースの作成、`POST` でリソースの取得を行う"
+			"D. `PUT` は部分更新、`PATCH` は完全置換に使う"
 		],
-		"correct": 0,
+		"correct": 1,
 		"explanation": "HTTPメソッドにはそれぞれセマンティクスがあります。`GET` は冪等で副作用のない取得、`POST` はリソースの新規作成、`PUT` はリソースの完全置換（冪等）、`PATCH` は部分更新、`DELETE` は削除です。Dは `PUT` と `PATCH` が逆です。すべてに `POST` を使うと（RPC的なスタイル）冪等性などHTTPの恩恵を受けられません。",
 		"interview_likely": true
 	},
@@ -1214,12 +1034,12 @@
 		"question": "次のコードの出力順序として正しいものはどれですか？",
 		"code": "console.log('A');\nsetTimeout(() => console.log('B'), 0);\nPromise.resolve().then(() => console.log('C'));\nconsole.log('D');",
 		"options": [
-			"A. A → D → B → C",
-			"B. D → A → C → B",
-			"C. A → B → C → D",
-			"D. A → D → C → B"
+			"A. A → D → C → B",
+			"B. A → B → C → D",
+			"C. A → D → B → C",
+			"D. D → A → C → B"
 		],
-		"correct": 3,
+		"correct": 0,
 		"explanation": "同期コード（A・D）が先に実行され、次にマイクロタスクキュー（`Promise.then`）のCが実行され、最後にマクロタスクキュー（`setTimeout`）のBが実行されます。`setTimeout(fn, 0)` は「0ミリ秒後」ではなく「現在のタスクと全マイクロタスクの後」に実行されます。Node.jsのイベントループではマイクロタスクがマクロタスクより優先されます。",
 		"interview_likely": true
 	},
@@ -1232,13 +1052,13 @@
 		"question": "ユーザーのプロフィール・投稿・フォロワー数を取得する場合、最もパフォーマンスの良い実装はどれですか？",
 		"code": "// 3つの独立したAPI呼び出し\ngetProfile(id), getPosts(id), getFollowers(id)",
 		"options": [
-			"A. `const profile = await getProfile(id); const posts = await getPosts(id); const followers = await getFollowers(id);`",
-			"B. `const [profile, posts, followers] = await Promise.all([getProfile(id), getPosts(id), getFollowers(id)]);`",
+			"A. コールバックで順番にネストして実行する",
+			"B. `const profile = await getProfile(id); const posts = await getPosts(id); const followers = await getFollowers(id);`",
 			"C. `Promise.race([getProfile(id), getPosts(id), getFollowers(id)])`",
-			"D. コールバックで順番にネストして実行する"
+			"D. `const [profile, posts, followers] = await Promise.all([getProfile(id), getPosts(id), getFollowers(id)]);`"
 		],
-		"correct": 1,
-		"explanation": "3つのAPIが互いに独立している場合、`Promise.all` で並列実行すると合計待ち時間を削減できます。直列 `await`（A）では各処理が順番に待つため、合計時間が各処理時間の合計になります。`Promise.all` では最も遅いリクエストの時間だけで済みます。ただし一方が他方の結果に依存する場合は直列が必要です。",
+		"correct": 3,
+		"explanation": "3つのAPIが互いに独立している場合、`Promise.all` で並列実行すると合計待ち時間を削減できます。直列 `await`（B）では各処理が順番に待つため、合計時間が各処理時間の合計になります。`Promise.all` では最も遅いリクエストの時間だけで済みます。ただし一方が他方の結果に依存する場合は直列が必要です。",
 		"interview_likely": true
 	},
 	{
@@ -1251,8 +1071,8 @@
 		"code": "",
 		"options": [
 			"A. I/O処理をOSに委譲してイベントループに制御を戻し、完了時にコールバックで通知を受ける非同期モデルを採用している",
-			"B. Node.jsはJavaのThread poolと同じ仕組みでスレッドを管理する",
-			"C. Node.jsは内部でマルチスレッドを自動的に使用してI/Oを並列化する",
+			"B. Node.jsは内部でマルチスレッドを自動的に使用してI/Oを並列化する",
+			"C. Node.jsはJavaのThread poolと同じ仕組みでスレッドを管理する",
 			"D. I/O処理中はCPUを一時停止させることでシングルスレッドでも並列に見せている"
 		],
 		"correct": 0,
@@ -1268,13 +1088,13 @@
 		"question": "RESTfulなAPIのURLとして最も適切な設計はどれですか？",
 		"code": "// ユーザーの注文一覧取得と、注文のキャンセル操作",
 		"options": [
-			"A. `GET /users/1/getAllOrders` と `DELETE /orders/deleteById/123`",
-			"B. `POST /api` にbodyで `{ action: 'getOrders', userId: 1 }` を渡す",
-			"C. `GET /getOrders?userId=1` と `POST /cancelOrder/123`",
-			"D. `GET /users/1/orders` と `PATCH /orders/123` にbodyで `{ status: 'cancelled' }` を渡す"
+			"A. `GET /users/1/orders` と `PATCH /orders/123` にbodyで `{ status: 'cancelled' }` を渡す",
+			"B. `GET /getOrders?userId=1` と `POST /cancelOrder/123`",
+			"C. `GET /users/1/getAllOrders` と `DELETE /orders/deleteById/123`",
+			"D. `POST /api` にbodyで `{ action: 'getOrders', userId: 1 }` を渡す"
 		],
-		"correct": 3,
-		"explanation": "RESTfulな設計ではURLはリソース（名詞）を表し、操作はHTTPメソッドで表します。`GET /users/1/orders` はユーザー1の注文リソースの取得を意味します。キャンセルはリソースの状態変更なので `PATCH` でステータスを変えます。A・CはURLに動詞が含まれており非RESTfulです。Dは全操作を `POST` で行うRPCスタイルです。",
+		"correct": 0,
+		"explanation": "RESTfulな設計ではURLはリソース（名詞）を表し、操作はHTTPメソッドで表します。`GET /users/1/orders` はユーザー1の注文リソースの取得を意味します。キャンセルはリソースの状態変更なので `PATCH` でステータスを変えます。B・CはURLに動詞が含まれており非RESTfulです。Dは全操作を `POST` で行うRPCスタイルです。",
 		"interview_likely": true
 	},
 	{
@@ -1288,11 +1108,11 @@
 		"options": [
 			"A. 1: 500, 2: 403, 3: 400",
 			"B. 1: 400, 2: 404, 3: 500",
-			"C. 1: 404, 2: 403, 3: 400",
-			"D. 1: 404, 2: 401, 3: 422"
+			"C. 1: 404, 2: 401, 3: 422",
+			"D. 1: 404, 2: 403, 3: 400"
 		],
-		"correct": 3,
-		"explanation": "404はリソースが見つからない、401は認証が必要（未認証）、422はリクエストの構造は正しいが処理できない（バリデーションエラー）を示します。400は構文的に不正なリクエスト、403は認証済みだが権限不足です。Dの2番目は「認証トークンなし」なので403（権限不足）ではなく401（未認証）が正しいです。",
+		"correct": 2,
+		"explanation": "404はリソースが見つからない、401は認証が必要（未認証）、422はリクエストの構造は正しいが処理できない（バリデーションエラー）を示します。400は構文的に不正なリクエスト、403は認証済みだが権限不足です。Cの2番目は「認証トークンなし」なので403（権限不足）ではなく401（未認証）が正しいです。",
 		"interview_likely": true
 	},
 	{
@@ -1304,12 +1124,12 @@
 		"question": "Node.jsサーバーでCPU集約的な処理（大量データのソート・画像処理など）を行う際、最も適切なアプローチはどれですか？",
 		"code": "",
 		"options": [
-			"A. `Promise.all` で複数の処理を並列実行する",
-			"B. `Worker Threads` または外部プロセス（子プロセス）に処理を委譲し、イベントループをブロックしない",
-			"C. `setTimeout(fn, 0)` で処理を遅延させる",
-			"D. `async/await` で非同期化する"
+			"A. `async/await` で非同期化する",
+			"B. `setTimeout(fn, 0)` で処理を遅延させる",
+			"C. `Promise.all` で複数の処理を並列実行する",
+			"D. `Worker Threads` または外部プロセス（子プロセス）に処理を委譲し、イベントループをブロックしない"
 		],
-		"correct": 1,
+		"correct": 3,
 		"explanation": "Node.jsのイベントループはシングルスレッドのため、CPU集約的な処理をメインスレッドで実行するとI/Oを含む他のリクエスト処理がブロックされます。`Worker Threads`（Node.js 12+）でCPU処理を別スレッドに委譲するか、`child_process` で別プロセスに分離します。`async/await` はI/O非同期には有効ですがCPU負荷は解消しません。",
 		"interview_likely": true
 	},
@@ -1322,9 +1142,9 @@
 		"question": "冪等性（idempotency）の観点からAPIを設計する際の説明として最も正しいものはどれですか？",
 		"code": "",
 		"options": [
-			"A. 冪等性はフロントエンドの責務であり、APIサーバーは考慮不要である",
+			"A. `POST` は冪等なので、何度呼び出しても同じ結果になるように実装すべきである",
 			"B. `PUT`・`DELETE`・`GET` は冪等（同じリクエストを複数回送っても結果が変わらない）だが、`POST` は冪等でないため、重複実行対策が必要なシナリオでは冪等キーを使う",
-			"C. `POST` は冪等なので、何度呼び出しても同じ結果になるように実装すべきである",
+			"C. 冪等性はフロントエンドの責務であり、APIサーバーは考慮不要である",
 			"D. `PATCH` は冪等なので、ネットワークエラー時に安全に再試行できる"
 		],
 		"correct": 1,
@@ -1340,301 +1160,13 @@
 		"question": "スケールアウトを前提としたWebアプリの認証方式として、JWTとセッションのトレードオフの説明として最も正しいものはどれですか？",
 		"code": "",
 		"options": [
-			"A. セッションはCookieを使わないため、モバイルアプリには使えない",
-			"B. JWTはサーバーにセッション情報を保存するためスケールアウトが難しい",
-			"C. JWTは暗号化されているためセキュリティ上は常にセッションより優れている",
-			"D. JWTはサーバーレスで状態管理できトークン失効前に無効化できないが、セッションはサーバーで管理でき即時失効できる代わりにセッションストア（RedisなどのDB）が必要"
+			"A. JWTはサーバーにセッション情報を保存するためスケールアウトが難しい",
+			"B. JWTはサーバーレスで状態管理できトークン失効前に無効化できないが、セッションはサーバーで管理でき即時失効できる代わりにセッションストア（RedisなどのDB）が必要",
+			"C. セッションはCookieを使わないため、モバイルアプリには使えない",
+			"D. JWTは暗号化されているためセキュリティ上は常にセッションより優れている"
 		],
-		"correct": 3,
+		"correct": 1,
 		"explanation": "JWTはサーバー側に状態を持たないためスケールアウトが容易ですが、一度発行したトークンは有効期限前に無効化できない（強制ログアウト困難）という欠点があります。セッションはサーバー側で管理するため即時失効が可能ですが、複数サーバーではRedisなどの共有セッションストアが必要です。どちらが優れているかはユースケース次第です。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_001",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 1,
-		"topic": "var hoisting",
-		"question_format": "why",
-		"question": "次のコードを実行すると何が出力されますか？",
-		"code": "function greet() {\n  console.log(name);\n  console.log(age);\n  var name = 'TypeScript';\n  let age = 5;\n}\ngreet();",
-		"options": [
-			"A. `'TypeScript'` と `undefined`",
-			"B. `'TypeScript'` と `ReferenceError`",
-			"C. `undefined` と `ReferenceError`",
-			"D. `ReferenceError` と `ReferenceError`"
-		],
-		"correct": 2,
-		"explanation": "`var` で宣言された変数は関数スコープの先頭に巻き上げ（hoist）られ、宣言前は `undefined` で初期化されます。一方 `let` は巻き上げられますが初期化されず、宣言前のアクセスは Temporal Dead Zone により `ReferenceError` になります。Java には巻き上げの概念がないため、この挙動は特に混乱しやすいポイントです。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_002",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 1,
-		"topic": "var vs let in loop",
-		"question_format": "why",
-		"question": "次の2つのループの出力結果はそれぞれ何ですか？",
-		"code": "for (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 1);\n}\nfor (let j = 0; j < 3; j++) {\n  setTimeout(() => console.log(j), 1);\n}",
-		"options": [
-			"A. `0 1 2` と `0 1 2`",
-			"B. `0 1 2` と `3 3 3`",
-			"C. `3 3 3` と `0 1 2`",
-			"D. `3 3 3` と `3 3 3`"
-		],
-		"correct": 2,
-		"explanation": "`var` は関数スコープのため、setTimeout のコールバック実行時にはループ終了後の `i = 3` を参照し `3 3 3` と出力されます。`let` はブロックスコープで反復ごとに新しいバインディングが作られるため `0 1 2` と出力されます。イベントループとスコープの理解を問う定番問題です。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_003",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 1,
-		"topic": "アロー関数の this",
-		"question_format": "why",
-		"question": "次のコードで `shape.diameter()` と `shape.perimeter()` の結果はそれぞれ何ですか？",
-		"code": "const shape = {\n  radius: 10,\n  diameter() {\n    return this.radius * 2;\n  },\n  perimeter: () => 2 * Math.PI * this.radius\n};",
-		"options": [
-			"A. `20` と `62.83`",
-			"B. `20` と `NaN`",
-			"C. `NaN` と `62.83`",
-			"D. `NaN` と `NaN`"
-		],
-		"correct": 1,
-		"explanation": "通常のメソッド `diameter()` では `this` がオブジェクト `shape` を参照するため `20` が返ります。一方アロー関数 `perimeter` は自身の `this` を持たず、外側スコープ（この場合グローバル）の `this` を参照します。グローバルに `radius` は存在しないため `this.radius` は `undefined` となり、計算結果は `NaN` です。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_004",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 2,
-		"topic": "型変換（Type Coercion）",
-		"question_format": "why",
-		"question": "次の式の結果は何ですか？",
-		"code": "console.log(+true);\nconsole.log(!!'');\nconsole.log(typeof typeof 1);",
-		"options": [
-			"A. `1`, `false`, `'number'`",
-			"B. `1`, `false`, `'string'`",
-			"C. `true`, `true`, `'string'`",
-			"D. `1`, `true`, `'number'`"
-		],
-		"correct": 1,
-		"explanation": "単項`+`は引数を数値に変換するため `+true` は `1` になります。空文字 `''` は falsy なので `!''` は `true`、さらに `!true` は `false` です。`typeof 1` は文字列 `'number'` を返し、`typeof 'number'` は `'string'` を返します。TypeScript を使っていてもランタイムでは JavaScript の型変換が発生するため、この挙動の理解は重要です。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_005",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 2,
-		"topic": "オブジェクトの参照",
-		"question_format": "why",
-		"question": "次のコードで何が出力されますか？",
-		"code": "let c = { greeting: 'Hey!' };\nlet d;\nd = c;\nc.greeting = 'Hello';\nconsole.log(d.greeting);",
-		"options": [
-			"A. `'Hey!'`",
-			"B. `'Hello'`",
-			"C. `undefined`",
-			"D. `ReferenceError`"
-		],
-		"correct": 1,
-		"explanation": "JavaScriptのオブジェクトは参照渡しで代入されます。`d = c` は `c` が指すオブジェクトへの参照をコピーするため、`c.greeting` を変更すると `d.greeting` にも反映されます。Java でも同様の挙動ですが、TypeScript で `as const` やイミュータブルパターンを使わない限り、この参照共有は発生することを意識しましょう。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_006",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 2,
-		"topic": "== vs ===",
-		"question_format": "why",
-		"question": "次のコードで何が出力されますか？",
-		"code": "let a = 3;\nlet b = new Number(3);\nlet c = 3;\n\nconsole.log(a == b);\nconsole.log(a === b);\nconsole.log(b === c);",
-		"options": [
-			"A. `true`, `true`, `true`",
-			"B. `true`, `false`, `false`",
-			"C. `false`, `false`, `true`",
-			"D. `true`, `true`, `false`"
-		],
-		"correct": 1,
-		"explanation": "`new Number(3)` は数値ではなくオブジェクトです。`==` は値の比較のみ行うため `a == b` は `true` ですが、`===` は値と型の両方を比較するため、プリミティブの `3` とオブジェクト型の `Number(3)` は一致せず `false` になります。TypeScript では `new Number()` の使用は推奨されず、型チェックでも区別されます。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_007",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 2,
-		"topic": "静的メソッド",
-		"question_format": "why",
-		"question": "次のコードを実行すると何が起きますか？",
-		"code": "class Animal {\n  static greet() {\n    return 'Hello!';\n  }\n}\n\nconst dog = new Animal();\nconsole.log(dog.greet());",
-		"options": [
-			"A. `'Hello!'`",
-			"B. `undefined`",
-			"C. `TypeError: dog.greet is not a function`",
-			"D. `SyntaxError`"
-		],
-		"correct": 2,
-		"explanation": "`static` メソッドはクラス自体に属し、インスタンスには継承されません。`Animal.greet()` とすれば呼び出せますが、`dog.greet()` はインスタンスにメソッドが存在しないため `TypeError` がスローされます。Java でもインスタンスから static メソッドを呼ぶと警告が出ますが、TypeScript ではコンパイルエラーになるため早期に検出できます。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_008",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 2,
-		"topic": "オブジェクトキーの文字列変換",
-		"question_format": "why",
-		"question": "次のコードで `a[b]` は何を返しますか？",
-		"code": "const a: Record<string, number> = {};\nconst b = { key: 'b' };\nconst c = { key: 'c' };\n\na[b as any] = 123;\na[c as any] = 456;\n\nconsole.log(a[b as any]);",
-		"options": [
-			"A. `123`",
-			"B. `456`",
-			"C. `undefined`",
-			"D. `ReferenceError`"
-		],
-		"correct": 1,
-		"explanation": "オブジェクトをキーとして使うと、自動的に `toString()` が呼ばれ `'[object Object]'` という文字列に変換されます。`b` も `c` も同じ `'[object Object]'` になるため、`a[c] = 456` が `a[b] = 123` を上書きし、結果は `456` になります。TypeScript では `Record<string, number>` を使うと型安全になりますが、ランタイムの文字列変換は防げません。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_009",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 2,
-		"topic": "イベントループ",
-		"question_format": "why",
-		"question": "次のコードの出力順序は何ですか？",
-		"code": "const foo = () => console.log('First');\nconst bar = () => setTimeout(() => console.log('Second'));\nconst baz = () => console.log('Third');\n\nbar();\nfoo();\nbaz();",
-		"options": [
-			"A. `First`, `Second`, `Third`",
-			"B. `First`, `Third`, `Second`",
-			"C. `Second`, `First`, `Third`",
-			"D. `Third`, `First`, `Second`"
-		],
-		"correct": 1,
-		"explanation": "`bar()` の中の `setTimeout` はコールバックをタスクキューに送ります。`foo()` と `baz()` は同期的に実行されるため、まず `'First'`、次に `'Third'` が出力されます。コールスタックが空になった後、イベントループがタスクキューからコールバックを取り出し `'Second'` が出力されます。Node.js の非同期処理を理解するための必須知識です。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_010",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 2,
-		"topic": "スプレッド構文と参照",
-		"question_format": "why",
-		"question": "次のコードで何が出力されますか？",
-		"code": "let person = { name: 'Lydia' };\nconst members = [person];\nperson = null as any;\n\nconsole.log(members);",
-		"options": [
-			"A. `[null]`",
-			"B. `[{}]`",
-			"C. `[{ name: 'Lydia' }]`",
-			"D. `[undefined]`"
-		],
-		"correct": 2,
-		"explanation": "`members[0]` には `person` が指していたオブジェクトへの参照のコピーが格納されています。`person = null` は変数 `person` の参照先を変更しただけで、配列に格納された参照は元のオブジェクトを指し続けます。オブジェクトの参照と変数の再代入を区別することが重要です。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_011",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 2,
-		"topic": "catch ブロックのスコープ",
-		"question_format": "why",
-		"question": "次の即時実行関数の出力は何ですか？",
-		"code": "(() => {\n  let x, y;\n  try {\n    throw new Error();\n  } catch (x) {\n    (x = 1), (y = 2);\n    console.log(x);\n  }\n  console.log(x);\n  console.log(y);\n})();",
-		"options": [
-			"A. `1`, `undefined`, `2`",
-			"B. `1`, `1`, `2`",
-			"C. `undefined`, `undefined`, `2`",
-			"D. `1`, `undefined`, `undefined`"
-		],
-		"correct": 0,
-		"explanation": "`catch` ブロックの引数 `x` はブロックスコープの変数で、外側の `let x` とは別物です。catch 内で `x = 1` はブロックスコープの `x` に代入され `1` と出力されます。一方 `y` は外側スコープの変数なので `y = 2` は外側に反映されます。catch ブロック外の `x` は未代入のまま `undefined` です。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_012",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 2,
-		"topic": "演算子の結合性",
-		"question_format": "why",
-		"question": "次のコードで何が出力されますか？",
-		"code": "console.log(3 + 4 + '5');",
-		"options": [
-			"A. `'345'`",
-			"B. `'75'`",
-			"C. `12`",
-			"D. `75`"
-		],
-		"correct": 1,
-		"explanation": "`+` 演算子は左から右へ評価されます。まず `3 + 4 = 7`（数値同士の加算）が実行され、次に `7 + '5'` で数値 `7` が文字列に変換されて `'75'` となります。TypeScript では strict モードで型エラーになる場合がありますが、ランタイムでは JavaScript のこの暗黙変換が起こることを理解しておく必要があります。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_013",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 3,
-		"topic": "Promise.race",
-		"question_format": "why",
-		"question": "次のコードで何が出力されますか？",
-		"code": "const p1 = new Promise<string>((res) => {\n  setTimeout(res, 500, 'one');\n});\nconst p2 = new Promise<string>((res) => {\n  setTimeout(res, 100, 'two');\n});\n\nPromise.race([p1, p2]).then(console.log);",
-		"options": [
-			"A. `'one'`",
-			"B. `'two'`",
-			"C. `'one'` の後に `'two'`",
-			"D. `'two'` の後に `'one'`"
-		],
-		"correct": 1,
-		"explanation": "`Promise.race` は渡された Promise のうち最初に解決（または拒否）されたものの結果を返します。`p2` は100ms、`p1` は500msで解決されるため、`p2` が先に解決し `'two'` が出力されます。`Promise.race` は1つの結果しか返さないため、`p1` の結果は `.then` には渡りません。API のタイムアウト処理などで実践的に使われるパターンです。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_014",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 3,
-		"topic": "ジェネレーター関数",
-		"question_format": "why",
-		"question": "次のコードで何が出力されますか？",
-		"code": "function* counter(i: number) {\n  yield i;\n  yield i * 2;\n}\n\nconst gen = counter(10);\nconsole.log(gen.next().value);\nconsole.log(gen.next().value);",
-		"options": [
-			"A. `[0, 10]` と `[10, 20]`",
-			"B. `10` と `20`",
-			"C. `20` と `20`",
-			"D. `10` と `NaN`"
-		],
-		"correct": 1,
-		"explanation": "ジェネレーター関数は `yield` キーワードで実行を一時停止し、値を生み出します。最初の `next()` で `yield i`（= 10）を返して一時停止、2回目の `next()` で `yield i * 2`（= 20）を返します。ジェネレーターは遅延評価パターンとして TypeScript でもイテレーターの実装などに活用されます。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_015",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 3,
-		"topic": "Object.freeze と参照",
-		"question_format": "why",
-		"question": "次のコードで何が出力されますか？",
-		"code": "const box = { x: 10, y: 20 };\nObject.freeze(box);\n\nconst shape = box;\nshape.x = 100;\n\nconsole.log(shape);",
-		"options": [
-			"A. `{ x: 100, y: 20 }`",
-			"B. `{ x: 10, y: 20 }`",
-			"C. `TypeError`（strict mode）",
-			"D. `{ x: 100 }`"
-		],
-		"correct": 1,
-		"explanation": "`Object.freeze` はオブジェクトのプロパティの追加・削除・変更を禁止します。`shape = box` は同じオブジェクトへの参照であるため、`shape` もフリーズされています。非 strict モードではプロパティの変更は黙って無視され、`x` は `10` のままです。TypeScript の `as const`（readonly）はコンパイル時のみの制約ですが、`Object.freeze` はランタイムでも効果がある点に注意しましょう。",
-		"interview_likely": true
-	},
-	{
-		"id": "jstricky_016",
-		"category": "JS基礎・トリッキー",
-		"difficulty": 3,
-		"topic": "クロージャーとメモ化",
-		"question_format": "why",
-		"question": "次のコードで3回の `addFn(10)` の出力結果はそれぞれ何ですか？",
-		"code": "const add = () => {\n  const cache: Record<number, number> = {};\n  return (num: number) => {\n    if (num in cache) {\n      return `Cache: ${cache[num]}`;\n    }\n    const result = num + 10;\n    cache[num] = result;\n    return `Calc: ${result}`;\n  };\n};\nconst addFn = add();\nconsole.log(addFn(10));\nconsole.log(addFn(10));\nconsole.log(addFn(5 * 2));",
-		"options": [
-			"A. `'Calc: 20'`, `'Calc: 20'`, `'Calc: 20'`",
-			"B. `'Calc: 20'`, `'Cache: 20'`, `'Calc: 20'`",
-			"C. `'Calc: 20'`, `'Cache: 20'`, `'Cache: 20'`",
-			"D. `'Calc: 20'`, `'Calc: 20'`, `'Cache: 20'`"
-		],
-		"correct": 2,
-		"explanation": "クロージャーにより `cache` オブジェクトは `addFn` の呼び出し間で保持されます。1回目は `10` がキャッシュにないため `'Calc: 20'` を返しつつキャッシュに保存。2回目は `10` がキャッシュにあるため `'Cache: 20'`。3回目の `5 * 2` は `10` に評価されるため、やはりキャッシュヒットし `'Cache: 20'` です。メモ化はパフォーマンス最適化の基本パターンです。",
 		"interview_likely": true
 	}
 ]

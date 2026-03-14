@@ -326,6 +326,12 @@ export const DrillApp = () => {
 		);
 	}
 
+	const totalQuestions = allQuestions.length;
+	const clearedCount = allQuestions.filter((q) => {
+		const record = progress.questions[q.id];
+		return record && record.correctCount > 0;
+	}).length;
+
 	if (appState === "finished") {
 		const score = computeScore(progress, sessionQuestions);
 		const percentage = Math.round((score / SESSION_SIZE) * 100);
@@ -333,7 +339,6 @@ export const DrillApp = () => {
 			topic: q.topic,
 			category: q.category,
 			correct: progress.currentSession?.answers[q.id]?.correct ?? false,
-			java_trap: q.java_trap,
 			interview_likely: q.interview_likely,
 		}));
 
@@ -399,11 +404,6 @@ export const DrillApp = () => {
 									<p className="text-xs text-slate-400 truncate">{r.category}</p>
 								</div>
 								<div className="flex gap-1 shrink-0">
-									{r.java_trap && (
-										<span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full">
-											⚠
-										</span>
-									)}
 									{r.interview_likely && (
 										<span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">
 											🎯
@@ -412,6 +412,22 @@ export const DrillApp = () => {
 								</div>
 							</div>
 						))}
+					</div>
+				</div>
+
+				{/* 問題バンク進捗 */}
+				<div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+					<div className="flex items-center justify-between mb-2">
+						<p className="text-xs font-medium text-slate-500">📚 問題バンク進捗</p>
+						<p className="text-sm font-bold text-slate-700">
+							{clearedCount} <span className="text-slate-400 font-normal">/ {totalQuestions}</span>
+						</p>
+					</div>
+					<div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+						<div
+							className="h-full rounded-full bg-emerald-500 transition-all duration-700"
+							style={{ width: `${Math.round((clearedCount / totalQuestions) * 100)}%` }}
+						/>
 					</div>
 				</div>
 
@@ -442,9 +458,14 @@ export const DrillApp = () => {
 					<CategoryBadge category={currentQuestion.category} />
 					<DifficultyStars level={currentQuestion.difficulty} />
 				</div>
-				<span className="text-slate-500 text-sm font-medium shrink-0">
-					{currentIndex + 1} / {SESSION_SIZE}
-				</span>
+				<div className="flex items-center gap-3 shrink-0">
+					<span className="text-slate-400 text-xs">
+						📚 {clearedCount}/{totalQuestions}
+					</span>
+					<span className="text-slate-500 text-sm font-medium">
+						{currentIndex + 1} / {SESSION_SIZE}
+					</span>
+				</div>
 			</div>
 
 			{/* Progress dots */}
@@ -528,11 +549,6 @@ export const DrillApp = () => {
 						{renderText(currentQuestion.explanation)}
 					</p>
 					<div className="flex gap-1.5 mt-2 flex-wrap">
-						{currentQuestion.java_trap && (
-							<span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">
-								⚠ Java罠に注意
-							</span>
-						)}
 						{currentQuestion.interview_likely && (
 							<span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
 								🎯 面接頻出

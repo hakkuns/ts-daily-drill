@@ -68,7 +68,8 @@ bun run scripts/generate-questions.ts       # 問題生成（初回・補充）
 type Question = {
   id: string                // 例: type_001, react_003
   category: string          // 型・文法 / デザインパターン / コードレビュー /
-                            // リファクタリング / React/フレームワーク / Node.js/API設計
+                            // リファクタリング / React/フレームワーク / Node.js/API設計 /
+                            // JS基礎・トリッキー
   difficulty: 1 | 2 | 3    // ★☆☆=1 ★★☆=2 ★★★=3
   topic: string             // 具体的なトピック名
   question_format: "definition" | "why" | "review" | "best_impl"
@@ -77,19 +78,18 @@ type Question = {
   options: string[]         // 4択（"A. ..."形式）
   correct: number           // 0〜3のインデックス
   explanation: string       // 解説（2〜4文）
-  java_trap: boolean        // Java経験者が引っかかりやすい問題
   interview_likely: boolean // 技術面接で出やすい問題
 }
 ```
 
 ## 出題ロジックの仕様
-- 間違えた問題を優先出題（`java_trap: true`は特に優先）
+- 間違えた問題を優先出題
 - 難易度は段階的に解放：★☆☆→★★☆→★★★（各難易度8割正解で昇格）
 - 全問クリア後はリセットして再出題
 - LocalStorageキー: `ts-drill-progress`
 - 1日1セット（5問）を管理。同日2回目は「今日は完了」を表示
 
-## 問題バンク構成（75問）
+## 問題バンク構成（91問）
 | カテゴリ             | ★☆☆ | ★★☆ | ★★★ | 合計 |
 |---------------------|-----|-----|-----|------|
 | 型・文法             |  7  |  9  |  4  |  20  |
@@ -98,7 +98,8 @@ type Question = {
 | リファクタリング     |  2  |  5  |  3  |  10  |
 | React/フレームワーク |  3  |  8  |  4  |  15  |
 | Node.js/API設計      |  2  |  5  |  3  |  10  |
-| **合計**             | **18** | **37** | **20** | **75** |
+| JS基礎・トリッキー   |  3  |  9  |  4  |  16  |
+| **合計**             | **21** | **46** | **24** | **91** |
 
 ## 対象者プロファイル（問題生成の前提）
 - Java実務経験あり（クラスベース思考が染みついている）

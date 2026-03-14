@@ -17,7 +17,6 @@ export const selectQuestions = (allQuestions: Question[], progress: Progress): Q
 
 	if (available.length === 0) return allQuestions.slice(0, SESSION_SIZE);
 
-	const wrongJavaTrap: Question[] = [];
 	const wrong: Question[] = [];
 	const unanswered: Question[] = [];
 
@@ -28,12 +27,7 @@ export const selectQuestions = (allQuestions: Question[], progress: Progress): Q
 		} else if (record.correctCount > 0) {
 			// Answered correctly at least once → skip
 		} else {
-			// Never answered correctly
-			if (q.java_trap) {
-				wrongJavaTrap.push(q);
-			} else {
-				wrong.push(q);
-			}
+			wrong.push(q);
 		}
 	}
 
@@ -45,15 +39,10 @@ export const selectQuestions = (allQuestions: Question[], progress: Progress): Q
 		return shuffled.slice(0, Math.min(count, shuffled.length));
 	};
 
-	// Priority 1: wrong java_trap
-	selected.push(...take(wrongJavaTrap, SESSION_SIZE - selected.length));
+	// Priority 1: wrong questions
+	selected.push(...take(wrong, SESSION_SIZE - selected.length));
 
-	// Priority 2: wrong non-java_trap
-	if (selected.length < SESSION_SIZE) {
-		selected.push(...take(wrong, SESSION_SIZE - selected.length));
-	}
-
-	// Priority 3: unanswered
+	// Priority 2: unanswered
 	if (selected.length < SESSION_SIZE) {
 		selected.push(...take(unanswered, SESSION_SIZE - selected.length));
 	}

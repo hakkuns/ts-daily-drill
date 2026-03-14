@@ -9,6 +9,5 @@ export type Question = {
 	options: string[]; // ["A. ...", "B. ...", "C. ...", "D. ..."]
 	correct: number; // 0-3 index
 	explanation: string;
-	java_trap: boolean;
 	interview_likely: boolean;
 };

@@ -1,0 +1,22 @@
+{
+	"permissions": {
+		"allow": [
+			"Bash(pnpm *)",
+			"Bash(bun *)",
+			"Bash(git add *)",
+			"Bash(git commit *)",
+			"Bash(git push)",
+			"Bash(git status)",
+			"Bash(git log *)",
+			"Bash(git diff *)",
+			"Bash(biome *)",
+			"Bash(npx *)",
+			"Write(src/**)",
+			"Write(scripts/**)",
+			"Write(.claude/**)",
+			"Write(.github/**)",
+			"Write(docs/**)"
+		],
+		"deny": ["Bash(rm -rf *)", "Bash(git reset --hard *)", "Bash(git push --force *)"]
+	}
+}
